@@ -159,17 +159,17 @@ export default function RunDetailPage() {
         </div>
       </div>
 
-      {/* Plan-approval gate */}
+      {/* Plan-approval gate — shows the FULL plan right here, next to Approve */}
       {awaitingApproval && (
         <div className="rounded-xl border border-amber-600/50 bg-amber-950/30 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="flex items-center gap-2 text-sm font-semibold text-amber-300">
                 <Clock className="h-4 w-4" /> Plan ready — your approval needed
               </h2>
               <p className="mt-1 text-xs text-amber-200/70">
                 {runAgents.length} agent{runAgents.length === 1 ? "" : "s"} will work in parallel on
-                the subtasks below (disjoint files). <strong>Nothing is changed until you approve.</strong>
+                disjoint files. Review the plan below. <strong>Nothing is changed until you approve.</strong>
               </p>
             </div>
             <div className="flex shrink-0 gap-2">
@@ -180,6 +180,43 @@ export default function RunDetailPage() {
                 <CheckCircle className="mr-1 h-3.5 w-3.5" /> Approve &amp; Run
               </Button>
             </div>
+          </div>
+
+          {/* The plan itself: each agent + the file changes it will make */}
+          <div className="mt-3 max-h-96 space-y-2 overflow-y-auto">
+            {runAgents.map((agent, idx) => {
+              const task = agentTaskMap[agent.id];
+              const steps = (task?.target_files as Record<string, unknown> | undefined)?.steps as
+                | Array<{ file_path: string; action: string; description: string }>
+                | undefined;
+              return (
+                <div key={agent.id} className="rounded-lg border border-amber-900/30 bg-zinc-900/50 p-2.5">
+                  <p className="mb-1 text-xs font-semibold text-amber-200">
+                    {idx + 1}. {agent.name}
+                  </p>
+                  {steps && steps.length > 0 ? (
+                    <ul className="space-y-1.5">
+                      {steps.map((s, i) => (
+                        <li key={i} className="text-[11px] leading-relaxed text-zinc-400">
+                          <span className={cn(
+                            "mr-1.5 rounded px-1 py-0.5 text-[9px] font-bold uppercase",
+                            s.action === "create" ? "bg-emerald-500/20 text-emerald-300" :
+                            s.action === "delete" ? "bg-red-500/20 text-red-300" :
+                            "bg-blue-500/20 text-blue-300",
+                          )}>
+                            {s.action}
+                          </span>
+                          <span className="font-mono text-zinc-300">{s.file_path}</span>
+                          <span className="text-zinc-500"> — {s.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-[11px] text-zinc-600">Generating plan…</p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
