@@ -9,6 +9,8 @@ export function useTasks(projectId: string) {
     queryKey: ["tasks", projectId],
     queryFn: () => apiClient.get(`/api/v1/projects/${projectId}/tasks`),
     enabled: !!projectId,
+    // Poll so newly-created subtasks (and their plans) appear live during a run.
+    refetchInterval: 5000,
   });
 }
 
