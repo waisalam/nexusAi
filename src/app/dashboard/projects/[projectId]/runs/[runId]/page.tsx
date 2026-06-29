@@ -236,7 +236,7 @@ export default function RunDetailPage() {
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
               <Bot className="h-4 w-4 text-blue-400" />
-              Deployed Agents ({runAgents.length})
+              {awaitingApproval ? `Proposed Plan — ${runAgents.length} agent${runAgents.length === 1 ? "" : "s"}` : `Deployed Agents (${runAgents.length})`}
             </h2>
             <span className="text-xs text-zinc-500">
               {busyAgents} working · {doneAgents} done
@@ -249,6 +249,7 @@ export default function RunDetailPage() {
                 agent={agent}
                 task={agentTaskMap[agent.id]}
                 colorIndex={i}
+                showPlan={awaitingApproval}
               />
             ))}
           </div>

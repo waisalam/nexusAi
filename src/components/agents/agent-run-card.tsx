@@ -27,13 +27,20 @@ const BORDER_COLORS = [
   "border-l-teal-500",
 ];
 
+interface PlanStep {
+  file_path: string;
+  action: string;
+  description: string;
+}
+
 interface AgentRunCardProps {
   agent: AgentResponse;
   task?: TaskResponse;
   colorIndex: number;
+  showPlan?: boolean;
 }
 
-export function AgentRunCard({ agent, task, colorIndex }: AgentRunCardProps) {
+export function AgentRunCard({ agent, task, colorIndex, showPlan = false }: AgentRunCardProps) {
   const { data: logs } = useAgentLogs(agent.id);
   const scrollRef = useRef<HTMLDivElement>(null);
   const borderColor = BORDER_COLORS[colorIndex % BORDER_COLORS.length];
@@ -55,6 +62,8 @@ export function AgentRunCard({ agent, task, colorIndex }: AgentRunCardProps) {
     : <div className="h-3.5 w-3.5 rounded-full bg-zinc-600" />;
 
   const files = (task?.target_files as Record<string, unknown>)?.files as string[] | undefined;
+  const steps = (task?.target_files as Record<string, unknown>)?.steps as PlanStep[] | undefined;
+  const planMode = showPlan && !!steps && steps.length > 0;
 
   return (
     <div className={cn(
@@ -88,25 +97,49 @@ export function AgentRunCard({ agent, task, colorIndex }: AgentRunCardProps) {
         </div>
       )}
 
-      <div ref={scrollRef} className="max-h-36 overflow-y-auto px-3 py-2 font-mono text-[10px] leading-relaxed space-y-0.5">
-        {recentLogs.length === 0 ? (
-          <p className="text-zinc-700">Waiting...</p>
-        ) : (
-          recentLogs.map((log, i) => (
-            <div key={log.id || i} className="flex gap-1.5">
-              <span className="text-zinc-700 shrink-0">
-                {new Date(log.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-              </span>
-              <span className={cn("shrink-0", logColors[log.log_type] || "text-zinc-500")}>
-                [{log.log_type}]
-              </span>
-              <span className="text-zinc-400 break-all">
-                {log.content.replace(`[${agent.name}] `, "")}
-              </span>
+      {planMode ? (
+        <div className="max-h-64 overflow-y-auto px-3 py-2 space-y-1.5">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-zinc-500">
+            Planned changes ({steps!.length})
+          </p>
+          {steps!.map((s, i) => (
+            <div key={i} className="rounded border border-zinc-800 bg-zinc-900/50 p-2">
+              <div className="mb-0.5 flex items-center gap-1.5">
+                <span className={cn(
+                  "rounded px-1 py-0.5 text-[9px] font-bold uppercase",
+                  s.action === "create" ? "bg-emerald-500/20 text-emerald-300" :
+                  s.action === "delete" ? "bg-red-500/20 text-red-300" :
+                  "bg-blue-500/20 text-blue-300",
+                )}>
+                  {s.action}
+                </span>
+                <span className="truncate font-mono text-[11px] text-zinc-300">{s.file_path}</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-zinc-400">{s.description}</p>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div ref={scrollRef} className="max-h-36 overflow-y-auto px-3 py-2 font-mono text-[10px] leading-relaxed space-y-0.5">
+          {recentLogs.length === 0 ? (
+            <p className="text-zinc-700">Waiting...</p>
+          ) : (
+            recentLogs.map((log, i) => (
+              <div key={log.id || i} className="flex gap-1.5">
+                <span className="text-zinc-700 shrink-0">
+                  {new Date(log.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </span>
+                <span className={cn("shrink-0", logColors[log.log_type] || "text-zinc-500")}>
+                  [{log.log_type}]
+                </span>
+                <span className="text-zinc-400 break-all">
+                  {log.content.replace(`[${agent.name}] `, "")}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
