@@ -50,3 +50,14 @@ export function useStopOrchestration() {
     },
   });
 }
+
+export function useApproveOrchestration() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (runId: string) =>
+      apiClient.post(`/api/v1/projects/orchestrate/runs/${runId}/approve`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orchestration-runs"] });
+    },
+  });
+}

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useProject } from "@/hooks/use-projects";
 import { useAgents, useTasks } from "@/hooks/use-agents";
-import { useOrchestrationRuns, useStopOrchestration } from "@/hooks/use-orchestrator";
+import { useOrchestrationRuns, useStopOrchestration, useApproveOrchestration } from "@/hooks/use-orchestrator";
 import { useOrchestratorStream } from "@/hooks/use-sse";
 import { AgentRunCard } from "@/components/agents/agent-run-card";
 
@@ -46,6 +46,7 @@ export default function RunDetailPage() {
   const { data: agents } = useAgents(projectId);
   const { data: tasksData } = useTasks(projectId);
   const stopOrchestration = useStopOrchestration();
+  const approveOrchestration = useApproveOrchestration();
 
   const run = runs?.find((r) => r.id === runId);
   const { logs: brainLogs, connected } = useOrchestratorStream(run ? run.id : null);
@@ -102,6 +103,17 @@ export default function RunDetailPage() {
     }
   };
 
+  const awaitingApproval = run.status === "awaiting_approval";
+
+  const onApprove = async () => {
+    try {
+      await approveOrchestration.mutateAsync(run.id);
+      toast.success("Plan approved — deploying the team");
+    } catch {
+      toast.error("Failed to approve");
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-5 px-4 py-6">
       {/* Header */}
@@ -146,6 +158,31 @@ export default function RunDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Plan-approval gate */}
+      {awaitingApproval && (
+        <div className="rounded-xl border border-amber-600/50 bg-amber-950/30 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-amber-300">
+                <Clock className="h-4 w-4" /> Plan ready — your approval needed
+              </h2>
+              <p className="mt-1 text-xs text-amber-200/70">
+                {runAgents.length} agent{runAgents.length === 1 ? "" : "s"} will work in parallel on
+                the subtasks below (disjoint files). <strong>Nothing is changed until you approve.</strong>
+              </p>
+            </div>
+            <div className="flex shrink-0 gap-2">
+              <Button variant="destructive" size="sm" onClick={onStop} disabled={stopOrchestration.isPending}>
+                <Square className="mr-1 h-3.5 w-3.5" /> Cancel
+              </Button>
+              <Button size="sm" onClick={onApprove} disabled={approveOrchestration.isPending}>
+                <CheckCircle className="mr-1 h-3.5 w-3.5" /> Approve &amp; Run
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pipeline Progress */}
       <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800">
