@@ -10,7 +10,10 @@ export function OAuthButtons() {
       <Button
         className="w-full"
         onClick={() => {
-          window.location.href = `${API_URL}/api/v1/auth/oauth/github`;
+          // Tell the backend which domain we started from so it returns us here
+          // after GitHub (the app runs on both the custom domain and the vercel URL).
+          const origin = encodeURIComponent(window.location.origin);
+          window.location.href = `${API_URL}/api/v1/auth/oauth/github?origin=${origin}`;
         }}
       >
         <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
