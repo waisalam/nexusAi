@@ -5,6 +5,7 @@ import { LogOut, Settings, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { clearStoredTokens } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { cn } from "@/lib/utils";
 
 export function Topbar() {
   const router = useRouter();
@@ -30,6 +31,22 @@ export function Topbar() {
       </div>
 
       <div className="flex items-center gap-2">
+        {typeof user?.demo_runs_remaining === "number" && (
+          <button
+            onClick={() => router.push("/contact")}
+            title="Free runs remaining on your demo"
+            className={cn(
+              "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+              user.demo_runs_remaining > 0
+                ? "border-zinc-700 text-zinc-300 hover:border-zinc-500"
+                : "border-red-800 bg-red-950/40 text-red-300 hover:bg-red-950/70"
+            )}
+          >
+            {user.demo_runs_remaining > 0
+              ? `${user.demo_runs_remaining} free run${user.demo_runs_remaining === 1 ? "" : "s"} left`
+              : "Out of free runs — get a plan"}
+          </button>
+        )}
         <Button variant="primary" size="sm" onClick={() => router.push("/dashboard/projects?new=true")}>
           <Plus className="h-4 w-4" /> New Repo
         </Button>

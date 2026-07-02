@@ -14,6 +14,7 @@ export interface UserResponse {
   auth_provider: string;
   is_active: boolean;
   created_at: string;
+  demo_runs_remaining: number;
 }
 
 export interface ProjectResponse {

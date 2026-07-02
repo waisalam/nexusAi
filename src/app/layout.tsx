@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { FeedbackWidget } from "@/components/feedback-widget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         <QueryProvider>
           {children}
+          <FeedbackWidget />
           <Toaster theme="dark" position="top-right" toastOptions={{ style: { background: "#161619", border: "1px solid #232328", color: "#fafafa" } }} />
         </QueryProvider>
       </body>
