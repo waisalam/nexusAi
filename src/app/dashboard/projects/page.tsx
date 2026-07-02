@@ -65,10 +65,10 @@ function ProjectsContent() {
       </div>
 
       {showForm && (
-        <Card className="animate-scale-in border-red-900/30">
+        <Card className="animate-scale-in border-indigo-500/25">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <GithubIcon className="h-5 w-5 text-red-500" /> Connect a GitHub Repository
+              <GithubIcon className="h-5 w-5 text-indigo-400" /> Connect a GitHub Repository
             </CardTitle>
             <CardDescription>We clone & analyze it once, then your agents work from that memory.</CardDescription>
           </CardHeader>

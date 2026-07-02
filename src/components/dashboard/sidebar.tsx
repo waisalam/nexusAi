@@ -38,17 +38,17 @@ export function Sidebar() {
               className={cn(
                 "animate-fade-up group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
                 isActive
-                  ? "bg-red-950/40 text-white"
+                  ? "bg-indigo-950/40 text-white"
                   : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
               )}
             >
               {isActive && (
-                <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-red-500" />
+                <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-indigo-400" />
               )}
               <item.icon
                 className={cn(
                   "h-4 w-4 transition-colors",
-                  isActive ? "text-red-400" : "text-zinc-500 group-hover:text-zinc-300"
+                  isActive ? "text-indigo-300" : "text-zinc-500 group-hover:text-zinc-300"
                 )}
               />
               {item.label}
@@ -61,7 +61,7 @@ export function Sidebar() {
         <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-3">
           <p className="text-xs font-medium text-zinc-300">Tip</p>
           <p className="mt-1 text-xs leading-relaxed text-zinc-500">
-            Open a project and hit <span className="text-red-400">Deploy Team</span> to split a task across parallel agents.
+            Open a project and hit <span className="text-indigo-300">Deploy Team</span> to split a task across parallel agents.
           </p>
         </div>
       </div>

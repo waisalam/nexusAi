@@ -29,12 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-[#08080a] text-white antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-[#0a0a10] text-white antialiased`}
       >
         <QueryProvider>
           {children}
           <FeedbackWidget />
-          <Toaster theme="dark" position="top-right" toastOptions={{ style: { background: "#161619", border: "1px solid #232328", color: "#fafafa" } }} />
+          <Toaster theme="dark" position="top-right" toastOptions={{ style: { background: "#171724", border: "1px solid #232328", color: "#fafafa" } }} />
         </QueryProvider>
       </body>
     </html>

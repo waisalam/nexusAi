@@ -54,7 +54,7 @@ export default function AdminPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3 text-zinc-400">
         <p>{error}</p>
-        <Link href="/dashboard" className="text-red-400 hover:underline">Back to dashboard</Link>
+        <Link href="/dashboard" className="text-indigo-400 hover:underline">Back to dashboard</Link>
       </div>
     );
 
@@ -72,7 +72,7 @@ export default function AdminPage() {
           { label: "Feedback", value: stats?.feedback ?? 0 },
           { label: "Contact requests", value: stats?.contact_requests ?? 0 },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl border border-zinc-800 bg-[#121214] p-5">
+          <div key={s.label} className="rounded-xl border border-zinc-800 bg-[#12121c] p-5">
             <div className="text-2xl font-semibold text-white">{s.value}</div>
             <div className="text-xs text-zinc-500">{s.label}</div>
           </div>
@@ -85,7 +85,7 @@ export default function AdminPage() {
             key={t}
             onClick={() => setTab(t)}
             className={`rounded-lg px-3 py-1.5 text-sm capitalize transition-colors ${
-              tab === t ? "bg-red-600 text-white" : "text-zinc-400 hover:bg-zinc-800/70 hover:text-white"
+              tab === t ? "bg-indigo-600 text-white" : "text-zinc-400 hover:bg-zinc-800/70 hover:text-white"
             }`}
           >
             {t}
@@ -96,7 +96,7 @@ export default function AdminPage() {
       <div className="space-y-2">
         {tab === "users"
           ? users.map((u) => (
-              <div key={u.id} className="rounded-lg border border-zinc-800 bg-[#121214] p-4 text-sm">
+              <div key={u.id} className="rounded-lg border border-zinc-800 bg-[#12121c] p-4 text-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-white">{u.username} <span className="text-zinc-500">· {u.email}</span></span>
                   <span className="text-xs text-zinc-500">{u.demo_runs_remaining} runs left · {new Date(u.created_at).toLocaleDateString()}</span>
@@ -104,7 +104,7 @@ export default function AdminPage() {
               </div>
             ))
           : list.map((r) => (
-              <div key={r.id} className="rounded-lg border border-zinc-800 bg-[#121214] p-4 text-sm">
+              <div key={r.id} className="rounded-lg border border-zinc-800 bg-[#12121c] p-4 text-sm">
                 <p className="text-zinc-100">{r.message}</p>
                 <div className="mt-2 text-xs text-zinc-500">
                   {r.name ? `${r.name} · ` : ""}{r.email || "anonymous"}

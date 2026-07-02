@@ -11,7 +11,7 @@ const POINTS = [
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-[#08080a]">
+    <div className="flex min-h-screen bg-[#0a0a10]">
       {/* Brand panel */}
       <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden border-r border-zinc-900 p-12 lg:flex">
         <div className="glow-blob animate-glow-pulse" style={{ width: 500, height: 500, top: -120, left: -120 }} />
@@ -32,7 +32,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 className="animate-fade-up flex items-center gap-3 text-zinc-300"
                 style={{ animationDelay: `${i * 100 + 150}ms`, opacity: 0 }}
               >
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-red-900/40 bg-red-950/40 text-red-400">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-950/40 text-indigo-300">
                   <p.icon className="h-4 w-4" />
                 </span>
                 <span className="text-sm">{p.text}</span>

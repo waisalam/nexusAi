@@ -14,7 +14,7 @@ interface LiveAgentMapProps {
 const BUSY = ["planning", "coding", "building", "testing", "pushing"];
 
 const statusIcon = (status: string) => {
-  if (BUSY.includes(status)) return <Loader2 className="h-3.5 w-3.5 animate-spin text-red-400" />;
+  if (BUSY.includes(status)) return <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-300" />;
   if (status === "completed") return <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />;
   if (status === "error") return <AlertCircle className="h-3.5 w-3.5 text-red-500" />;
   return <Pause className="h-3.5 w-3.5 text-zinc-500" />;
@@ -22,7 +22,7 @@ const statusIcon = (status: string) => {
 
 // Stable color per agent so the same agent is the same color across files.
 const AGENT_COLORS = [
-  "text-red-300", "text-orange-300", "text-amber-300", "text-pink-300",
+  "text-indigo-300", "text-orange-300", "text-amber-300", "text-pink-300",
   "text-rose-300", "text-fuchsia-300", "text-violet-300", "text-cyan-300",
 ];
 
@@ -36,14 +36,14 @@ export function LiveAgentMap({ agents, locks }: LiveAgentMapProps) {
   };
 
   return (
-    <Card className="animate-scale-in border-red-900/40">
+    <Card className="animate-scale-in border-indigo-500/30">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-400" />
           </span>
-          <Bot className="h-4 w-4 text-red-500" />
+          <Bot className="h-4 w-4 text-indigo-400" />
           Live Agent Map
           <span className="ml-auto text-xs font-normal text-zinc-400">
             {busyCount} working simultaneously

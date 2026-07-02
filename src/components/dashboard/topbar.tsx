@@ -56,7 +56,7 @@ export function Topbar() {
         <Button variant="ghost" size="icon" title="Log out" onClick={handleLogout}>
           <LogOut className="h-4 w-4" />
         </Button>
-        <div className="ml-1 flex h-8 w-8 items-center justify-center rounded-full border border-red-900/50 bg-red-950/50 text-sm font-semibold text-red-300">
+        <div className="ml-1 flex h-8 w-8 items-center justify-center rounded-full border border-indigo-500/40 bg-indigo-950/60 text-sm font-semibold text-indigo-300">
           {initial}
         </div>
       </div>

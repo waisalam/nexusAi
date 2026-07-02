@@ -41,10 +41,10 @@ export default function DashboardPage() {
 
       {/* Onboarding (only when no projects) */}
       {!isLoading && !hasProjects && (
-        <div className="animate-scale-in relative overflow-hidden rounded-2xl border border-zinc-800 bg-[#101013] p-8">
+        <div className="animate-scale-in relative overflow-hidden rounded-2xl border border-zinc-800 bg-[#12121c] p-8">
           <div className="glow-blob animate-glow-pulse" style={{ width: 320, height: 320, top: -120, right: -80 }} />
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-red-900/40 bg-red-950/30 px-3 py-1 text-xs text-red-300">
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-950/30 px-3 py-1 text-xs text-indigo-200">
               <Sparkles className="h-3.5 w-3.5" /> Get started in 3 steps
             </div>
             <h2 className="mt-4 text-xl font-bold">Deploy your first AI engineering team</h2>
@@ -52,7 +52,7 @@ export default function DashboardPage() {
               {ONBOARD.map((step, i) => (
                 <div key={step.title} className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
                   <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-950/50 text-sm font-bold text-red-400">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-950/60 text-sm font-bold text-indigo-300">
                       {i + 1}
                     </span>
                     <step.icon className="h-4 w-4 text-zinc-500" />

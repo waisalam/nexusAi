@@ -14,7 +14,7 @@ interface AgentCardProps {
 const statusIcons: Record<string, React.ReactNode> = {
   idle: <Pause className="h-4 w-4 text-zinc-400" />,
   planning: <Loader2 className="h-4 w-4 text-amber-400 animate-spin" />,
-  coding: <Loader2 className="h-4 w-4 text-red-400 animate-spin" />,
+  coding: <Loader2 className="h-4 w-4 text-indigo-300 animate-spin" />,
   building: <Loader2 className="h-4 w-4 text-purple-400 animate-spin" />,
   testing: <Loader2 className="h-4 w-4 text-cyan-400 animate-spin" />,
   pushing: <Loader2 className="h-4 w-4 text-green-400 animate-spin" />,
@@ -38,12 +38,12 @@ export function AgentCard({ agent, selected, onClick }: AgentCardProps) {
 
   return (
     <Card
-      className={`cursor-pointer transition-all ${selected ? "border-red-600/70 bg-red-950/20" : "hover:border-zinc-700"}`}
+      className={`cursor-pointer transition-all ${selected ? "border-indigo-500/60 bg-indigo-950/20" : "hover:border-zinc-700"}`}
       onClick={onClick}
     >
       <CardContent className="flex items-center gap-4 p-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900">
-          <Bot className="h-5 w-5 text-red-400" />
+          <Bot className="h-5 w-5 text-indigo-300" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">

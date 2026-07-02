@@ -22,7 +22,7 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
       <Card className="border-zinc-800 bg-zinc-950">
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
-            <Brain className="h-4 w-4 text-red-400 animate-pulse" />
+            <Brain className="h-4 w-4 text-indigo-300 animate-pulse" />
             AI Memory
           </CardTitle>
         </CardHeader>
@@ -45,11 +45,11 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <Brain className="h-4 w-4 text-red-400" />
+            <Brain className="h-4 w-4 text-indigo-300" />
             AI Memory
           </span>
           <div className="flex gap-2">
-            <Badge variant="default" className="border-red-900/50 text-red-400 text-xs">
+            <Badge variant="default" className="border-indigo-500/40 text-indigo-300 text-xs">
               {memory.total_lessons} lessons
             </Badge>
             <Badge variant="default" className="border-zinc-700 text-zinc-400 text-xs">

@@ -32,10 +32,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Link href={`/dashboard/projects/${project.id}`}>
-      <div className="hover-lift group relative h-full rounded-xl border border-zinc-800 bg-[#101013] p-5">
+      <div className="hover-lift group relative h-full rounded-xl border border-zinc-800 bg-[#12121c] p-5">
         <div className="flex items-start justify-between">
           <div className="min-w-0">
-            <h3 className="truncate text-base font-semibold text-white group-hover:text-red-100">
+            <h3 className="truncate text-base font-semibold text-white group-hover:text-indigo-100">
               {project.name}
             </h3>
             <p className="mt-0.5 truncate text-sm text-zinc-500">
@@ -74,7 +74,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               GitHub
             </a>
           </div>
-          <span className="flex items-center gap-1 text-xs font-medium text-red-400 opacity-0 transition-opacity group-hover:opacity-100">
+          <span className="flex items-center gap-1 text-xs font-medium text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
             Open <ArrowRight className="h-3.5 w-3.5" />
           </span>
         </div>

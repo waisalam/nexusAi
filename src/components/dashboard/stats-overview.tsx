@@ -21,9 +21,9 @@ export function StatsOverview({ totalProjects, activeAgents = 0, pullRequests = 
         <div
           key={stat.label}
           style={{ animationDelay: `${i * 80}ms` }}
-          className="hover-lift animate-fade-up flex items-center gap-4 rounded-xl border border-zinc-800 bg-[#101013] p-5"
+          className="hover-lift animate-fade-up flex items-center gap-4 rounded-xl border border-zinc-800 bg-[#12121c] p-5"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-red-900/40 bg-red-950/40 text-red-400">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-950/40 text-indigo-300">
             <stat.icon className="h-5 w-5" />
           </div>
           <div>

@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #08080a;
-  --surface: #101013;
-  --surface-2: #161619;
-  --border: #232328;
+  /* Indigo/violet premium theme — near-black blue-tinted canvas, glass surfaces,
+     indigo→violet gradient accents. */
+  --background: #0a0a10;
+  --surface: #12121c;
+  --surface-2: #171724;
+  --border: #26263a;
   --foreground: #fafafa;
-  --muted: #a1a1aa;
-  --accent: #ef4444;
-  --accent-hover: #dc2626;
-  --accent-soft: rgba(239, 68, 68, 0.14);
+  --muted: #a1a1b5;
+  --accent: #6366f1;
+  --accent-2: #a855f7;
+  --accent-hover: #818cf8;
+  --accent-soft: rgba(99, 102, 241, 0.14);
 }
 
 @theme inline {
@@ -28,22 +31,22 @@ body {
 /* Thin, dark scrollbars to match the theme */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2a2a30 transparent;
+  scrollbar-color: #2d2d42 transparent;
 }
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  background: #2a2a30;
+  background: #2d2d42;
   border-radius: 9999px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: #3a3a42;
+  background: #3d3d58;
 }
 
 /* ============================================================
-   Minimalist animations — used across every page
+   Animations — used across every page
    ============================================================ */
 @keyframes nx-fade-in {
   from { opacity: 0; }
@@ -93,6 +96,36 @@ body {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+/* Console mock: code lines "type" in by revealing width */
+@keyframes nx-type-in {
+  from { width: 0; opacity: 0.4; }
+  to { width: 100%; opacity: 1; }
+}
+/* Blinking terminal caret */
+@keyframes nx-caret {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+/* Progress bar fill */
+@keyframes nx-fill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+/* Soft aurora drift for hero backgrounds */
+@keyframes nx-aurora {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.08); }
+  66% { transform: translate(-25px, 15px) scale(0.95); }
+}
+/* Dash flow along pipeline connector lines */
+@keyframes nx-dash-flow {
+  to { stroke-dashoffset: -24; }
+}
+/* Beam sweeping across a border (top edge highlight) */
+@keyframes nx-beam {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
 
 .animate-fade-in { animation: nx-fade-in 0.6s ease forwards; }
 .animate-fade-up { animation: nx-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -103,6 +136,7 @@ body {
 .animate-glow-pulse { animation: nx-glow-pulse 3s ease-in-out infinite; }
 .animate-spin-slow { animation: nx-spin-slow 14s linear infinite; }
 .animate-pulse-dot { animation: nx-pulse-dot 1.8s ease-in-out infinite; }
+.animate-aurora { animation: nx-aurora 14s ease-in-out infinite; }
 
 /* Stagger helpers (apply with an entrance animation) */
 .delay-0 { animation-delay: 0ms; }
@@ -130,20 +164,31 @@ body {
    Reusable visual utilities
    ============================================================ */
 .text-gradient {
-  background: linear-gradient(135deg, #fafafa 0%, #fca5a5 55%, #ef4444 100%);
+  background: linear-gradient(135deg, #fafafa 0%, #c7d2fe 55%, #818cf8 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-.text-gradient-red {
-  background: linear-gradient(135deg, #f87171 0%, #ef4444 50%, #b91c1c 100%);
+/* Brand gradient text (name kept for backward compatibility) */
+.text-gradient-red,
+.text-gradient-brand {
+  background: linear-gradient(120deg, #818cf8 0%, #a78bfa 45%, #c084fc 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+/* Animated version for hero headlines */
+.text-gradient-animated {
+  background: linear-gradient(120deg, #818cf8, #c084fc, #e879f9, #818cf8);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nx-gradient-move 6s ease infinite;
 }
 
 .glass {
-  background: rgba(18, 18, 21, 0.7);
+  background: rgba(18, 18, 28, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -154,18 +199,21 @@ body {
   background-size: 26px 26px;
 }
 
-/* Animated red radial glow blob */
+/* Animated radial glow blob (brand accent) */
 .glow-blob {
   position: absolute;
   border-radius: 9999px;
   filter: blur(80px);
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
   pointer-events: none;
+}
+.glow-blob-violet {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
 }
 
 /* Shimmer skeleton */
 .skeleton {
-  background: linear-gradient(90deg, #131316 25%, #1c1c21 37%, #131316 63%);
+  background: linear-gradient(90deg, #14141f 25%, #1e1e2e 37%, #14141f 63%);
   background-size: 400% 100%;
   animation: nx-shimmer 1.4s ease infinite;
 }
@@ -177,8 +225,87 @@ body {
 }
 .hover-lift:hover {
   transform: translateY(-3px);
-  border-color: rgba(239, 68, 68, 0.4);
-  box-shadow: 0 10px 40px -12px rgba(239, 68, 68, 0.25);
+  border-color: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 10px 40px -12px rgba(99, 102, 241, 0.3);
+}
+
+/* Premium glass card with a gradient top-edge and hover glow */
+.card-premium {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 40%), var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.card-premium::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(129, 140, 248, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.card-premium:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 20px 60px -20px rgba(99, 102, 241, 0.35);
+}
+.card-premium:hover::before {
+  opacity: 1;
+}
+
+/* Icon chip used in feature/pipeline cards */
+.icon-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(168, 85, 247, 0.1));
+  color: #a5b4fc;
+  transition: all 0.3s ease;
+}
+.card-premium:hover .icon-chip,
+.group:hover .icon-chip {
+  border-color: rgba(129, 140, 248, 0.6);
+  color: #c7d2fe;
+  box-shadow: 0 0 24px -6px rgba(129, 140, 248, 0.5);
+}
+
+/* Console mock (hero): terminal-style typed lines */
+.console-line {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  animation: nx-type-in 0.5s steps(24) forwards;
+}
+.console-caret::after {
+  content: "▍";
+  color: #818cf8;
+  animation: nx-caret 1s infinite;
+}
+.progress-fill {
+  animation: nx-fill 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Sweeping light beam across a container's top edge */
+.beam-edge {
+  position: relative;
+  overflow: hidden;
+}
+.beam-edge::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1px;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(165, 180, 252, 0.8), transparent);
+  animation: nx-beam 3.5s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -194,4 +321,5 @@ body {
     opacity: 1 !important;
     transform: none !important;
   }
+  .console-line { width: 100% !important; }
 }

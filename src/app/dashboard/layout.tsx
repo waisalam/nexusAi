@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#08080a]">
+    <div className="min-h-screen bg-[#0a0a10]">
       <Sidebar />
       <Topbar />
       <main className="ml-64 pt-16">

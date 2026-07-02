@@ -154,7 +154,7 @@ export default function ProjectDetailPage() {
   const visibleAgents = (agents || []).filter(a => a.name !== "Fixer (Orchestrator)");
 
   const renderTaskRow = (task: typeof allTasks[number], isChild = false) => (
-    <div key={task.id} className={cn("flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/30 p-3 transition-colors hover:border-zinc-700", isChild && "ml-4 border-l-2 border-l-red-800/70")}>
+    <div key={task.id} className={cn("flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/30 p-3 transition-colors hover:border-zinc-700", isChild && "ml-4 border-l-2 border-l-indigo-500/60")}>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium">{isChild && "↳ "}{task.title}</p>
         <div className="mt-1 flex items-center gap-2">
@@ -241,7 +241,7 @@ export default function ProjectDetailPage() {
 
       {/* How-to hint */}
       <div className="flex items-start gap-2 rounded-lg border border-zinc-800/80 bg-zinc-900/40 px-4 py-3 text-xs text-zinc-400">
-        <Rocket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-500" />
+        <Rocket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-400" />
         <p>
           <strong className="text-zinc-200">Deploy Team</strong> breaks your task into subtasks and spawns up to 8 agents that work in parallel on disjoint files, then integrates &amp; build-verifies everything into <strong className="text-zinc-200">one pull request</strong>. The Play (▶) on a task runs a single agent — handy for retrying one subtask.
         </p>
@@ -249,7 +249,7 @@ export default function ProjectDetailPage() {
 
       {/* Task Creation Form */}
       {showTaskForm && (
-        <Card className="animate-scale-in border-red-900/30">
+        <Card className="animate-scale-in border-indigo-500/25">
           <CardHeader>
             <CardTitle>Create Task</CardTitle>
             <CardDescription>Describe what you want your AI team to build — plain English is fine.</CardDescription>
@@ -264,7 +264,7 @@ export default function ProjectDetailPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-zinc-300">Description</label>
                 <textarea
-                  className="flex min-h-25 w-full rounded-lg border border-zinc-700 bg-zinc-900/60 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus-visible:border-red-500/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/20"
+                  className="flex min-h-25 w-full rounded-lg border border-zinc-700 bg-zinc-900/60 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus-visible:border-indigo-500/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/20"
                   placeholder="Describe the task in detail..."
                   {...register("description")}
                 />
@@ -334,7 +334,7 @@ export default function ProjectDetailPage() {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <ListTodo className="h-4 w-4 text-red-500" /> Tasks ({tasksData?.total || 0})
+                <ListTodo className="h-4 w-4 text-indigo-400" /> Tasks ({tasksData?.total || 0})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -361,7 +361,7 @@ export default function ProjectDetailPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Bot className="h-4 w-4 text-red-500" /> Agents ({visibleAgents.length})
+                  <Bot className="h-4 w-4 text-indigo-400" /> Agents ({visibleAgents.length})
                 </CardTitle>
                 <Button variant="ghost" size="sm" onClick={openAgentForm} title="Spawn an agent (optional)">
                   <Plus className="h-3.5 w-3.5" />

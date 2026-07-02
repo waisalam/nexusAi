@@ -7,7 +7,7 @@ interface LogoProps {
   wordClassName?: string;
 }
 
-/** Nexus AI mark — a connected node graph (the "nexus") in red. */
+/** Nexus AI mark — a connected node graph (the "nexus") in indigo→violet. */
 export function LogoMark({ className, size = 28 }: { className?: string; size?: number }) {
   return (
     <svg
@@ -20,8 +20,8 @@ export function LogoMark({ className, size = 28 }: { className?: string; size?: 
     >
       <defs>
         <linearGradient id="nx-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#f87171" />
-          <stop offset="1" stopColor="#dc2626" />
+          <stop stopColor="#818cf8" />
+          <stop offset="1" stopColor="#a855f7" />
         </linearGradient>
       </defs>
       <path
@@ -35,9 +35,9 @@ export function LogoMark({ className, size = 28 }: { className?: string; size?: 
       <line x1="16" y1="16" x2="24" y2="20.5" stroke="url(#nx-grad)" strokeWidth="1.4" />
       <line x1="16" y1="16" x2="8" y2="20.5" stroke="url(#nx-grad)" strokeWidth="1.4" />
       <circle cx="16" cy="16" r="3.4" fill="url(#nx-grad)" />
-      <circle cx="16" cy="6" r="2.1" fill="#f87171" />
-      <circle cx="24" cy="20.5" r="2.1" fill="#ef4444" />
-      <circle cx="8" cy="20.5" r="2.1" fill="#dc2626" />
+      <circle cx="16" cy="6" r="2.1" fill="#818cf8" />
+      <circle cx="24" cy="20.5" r="2.1" fill="#8b5cf6" />
+      <circle cx="8" cy="20.5" r="2.1" fill="#a855f7" />
     </svg>
   );
 }
@@ -57,7 +57,7 @@ export function Logo({ className, size = 28, showWord = true, wordClassName }: L
       <LogoMark size={size} />
       {showWord && (
         <span className={cn("text-lg font-bold tracking-tight text-white", wordClassName)}>
-          Nexus<span className="text-red-500"> AI</span>
+          Nexus<span className="text-gradient-brand"> AI</span>
         </span>
       )}
     </div>
