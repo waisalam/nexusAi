@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,14 @@ import type { TokenResponse } from "@/types/api";
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
+
+  // Surface a reason if OAuth bounced us back here (?error=...).
+  useEffect(() => {
+    const oauthError = searchParams.get("error");
+    if (oauthError) setError(`GitHub sign-in failed: ${decodeURIComponent(oauthError)}`);
+  }, [searchParams]);
 
   const {
     register,
