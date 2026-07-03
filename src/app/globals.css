@@ -1,23 +1,62 @@
 @import "tailwindcss";
 
+/* Ties the `dark:` utility variant to our [data-theme] toggle attribute
+   instead of Tailwind's default OS prefers-color-scheme strategy — so
+   dark:/light-default utilities follow the in-app toggle, not the OS. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+  Metallic monochrome system — classy black/white/graphite, no color accent.
+  "Metal" is expressed via brushed-steel sheens and frosted glass on specific
+  chrome elements (terminal frame, cards), never via colorful gradients on
+  text/buttons. Full light + dark support via [data-theme]. Contrast-checked
+  (WCAG AA, 4.5:1+ for text).
+*/
 :root {
-  /* Indigo/violet premium theme — near-black blue-tinted canvas, glass surfaces,
-     indigo→violet gradient accents. */
-  --background: #0a0a10;
-  --surface: #12121c;
-  --surface-2: #171724;
-  --border: #26263a;
-  --foreground: #fafafa;
-  --muted: #a1a1b5;
-  --accent: #6366f1;
-  --accent-2: #a855f7;
-  --accent-hover: #818cf8;
-  --accent-soft: rgba(99, 102, 241, 0.14);
+  --background: #0a0a0b;        /* near-black, warm-neutral (not pure #000 — avoids OLED smear) */
+  --surface: #141416;           /* graphite panel */
+  --surface-2: #1c1c1f;         /* lighter graphite (nested/hover) */
+  --border: #2e2e33;            /* metal-edge border */
+  --foreground: #f5f5f7;        /* soft white */
+  --muted-foreground: #9a9aa3;  /* cool gray — ~7:1 on background */
+  --accent: #c7c7cf;            /* chrome/silver */
+  --accent-hover: #e4e4e9;      /* brighter chrome on hover */
+  --accent-foreground: #0a0a0b; /* near-black on silver — >10:1 */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --ring: #c7c7cf;
+  --metal-sheen: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 40%, rgba(255,255,255,0.06) 100%);
+}
+
+[data-theme="light"] {
+  --background: #ffffff;
+  --surface: #f5f5f7;           /* soft gray panel */
+  --surface-2: #ebebef;
+  --border: #dcdce1;            /* metal-edge border */
+  --foreground: #0a0a0b;        /* near-black */
+  --muted-foreground: #6e6e76;  /* mid gray — ~4.8:1 on background */
+  --accent: #2f2f33;            /* gunmetal — reads as brushed metal on white */
+  --accent-hover: #18181b;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --metal-sheen: linear-gradient(135deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.01) 40%, rgba(0,0,0,0.03) 100%);
+  --ring: #2f2f33;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -26,27 +65,28 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Thin, dark scrollbars to match the theme */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2d2d42 transparent;
+  scrollbar-color: var(--border) transparent;
 }
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  background: #2d2d42;
+  background: var(--border);
   border-radius: 9999px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: #3d3d58;
+  background: var(--muted-foreground);
 }
 
 /* ============================================================
-   Animations — used across every page
+   Motion — entrance only. No decorative background animation
+   (aurora blobs / gradient sweeps removed per Flat Design).
    ============================================================ */
 @keyframes nx-fade-in {
   from { opacity: 0; }
@@ -68,77 +108,35 @@ body {
   from { opacity: 0; transform: translateX(-20px); }
   to { opacity: 1; transform: translateX(0); }
 }
-@keyframes nx-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-@keyframes nx-glow-pulse {
-  0%, 100% { opacity: 0.45; }
-  50% { opacity: 0.9; }
-}
 @keyframes nx-shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 @keyframes nx-pulse-dot {
-  0%, 100% { box-shadow: 0 0 0 0 var(--accent-soft); }
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 30%, transparent); }
   50% { box-shadow: 0 0 0 6px transparent; }
-}
-@keyframes nx-spin-slow {
-  to { transform: rotate(360deg); }
-}
-@keyframes nx-gradient-move {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@keyframes nx-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
 }
 /* Console mock: code lines "type" in by revealing width */
 @keyframes nx-type-in {
   from { width: 0; opacity: 0.4; }
   to { width: 100%; opacity: 1; }
 }
-/* Blinking terminal caret */
 @keyframes nx-caret {
   0%, 45% { opacity: 1; }
   50%, 100% { opacity: 0; }
 }
-/* Progress bar fill */
 @keyframes nx-fill {
   from { width: 0%; }
   to { width: 100%; }
 }
-/* Soft aurora drift for hero backgrounds */
-@keyframes nx-aurora {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -20px) scale(1.08); }
-  66% { transform: translate(-25px, 15px) scale(0.95); }
-}
-/* Dash flow along pipeline connector lines */
-@keyframes nx-dash-flow {
-  to { stroke-dashoffset: -24; }
-}
-/* Beam sweeping across a border (top edge highlight) */
-@keyframes nx-beam {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
-}
 
-.animate-fade-in { animation: nx-fade-in 0.6s ease forwards; }
-.animate-fade-up { animation: nx-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.animate-fade-down { animation: nx-fade-down 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.animate-scale-in { animation: nx-scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.animate-slide-in-left { animation: nx-slide-in-left 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.animate-float { animation: nx-float 5s ease-in-out infinite; }
-.animate-glow-pulse { animation: nx-glow-pulse 3s ease-in-out infinite; }
-.animate-spin-slow { animation: nx-spin-slow 14s linear infinite; }
+.animate-fade-in { animation: nx-fade-in 0.5s ease forwards; }
+.animate-fade-up { animation: nx-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-down { animation: nx-fade-down 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-scale-in { animation: nx-scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-slide-in-left { animation: nx-slide-in-left 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-pulse-dot { animation: nx-pulse-dot 1.8s ease-in-out infinite; }
-.animate-aurora { animation: nx-aurora 14s ease-in-out infinite; }
 
-/* Stagger helpers (apply with an entrance animation) */
 .delay-0 { animation-delay: 0ms; }
 .delay-75 { animation-delay: 75ms; }
 .delay-100 { animation-delay: 100ms; }
@@ -151,9 +149,9 @@ body {
 /* Reveal-on-scroll (paired with IntersectionObserver in <Reveal/>) */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .reveal.is-visible {
   opacity: 1;
@@ -161,121 +159,57 @@ body {
 }
 
 /* ============================================================
-   Reusable visual utilities
+   Flat utilities — solid colors, no gradients/glow/blur decoration.
    ============================================================ */
-.text-gradient {
-  background: linear-gradient(135deg, #fafafa 0%, #c7d2fe 55%, #818cf8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-/* Brand gradient text (name kept for backward compatibility) */
-.text-gradient-red,
-.text-gradient-brand {
-  background: linear-gradient(120deg, #818cf8 0%, #a78bfa 45%, #c084fc 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-/* Animated version for hero headlines */
-.text-gradient-animated {
-  background: linear-gradient(120deg, #818cf8, #c084fc, #e879f9, #818cf8);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: nx-gradient-move 6s ease infinite;
-}
 
-.glass {
-  background: rgba(18, 18, 28, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Subtle dotted grid background for hero / empty states */
-.grid-bg {
-  background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 26px 26px;
-}
-
-/* Animated radial glow blob (brand accent) */
-.glow-blob {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(80px);
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
-  pointer-events: none;
-}
-.glow-blob-violet {
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
-}
-
-/* Shimmer skeleton */
+/* Shimmer skeleton (loading state, not decoration) */
 .skeleton {
-  background: linear-gradient(90deg, #14141f 25%, #1e1e2e 37%, #14141f 63%);
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 37%, var(--surface) 63%);
   background-size: 400% 100%;
   animation: nx-shimmer 1.4s ease infinite;
 }
 
-/* Card hover lift */
+/* Card hover lift — flat: border + shadow only, no glow */
 .hover-lift {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .hover-lift:hover {
-  transform: translateY(-3px);
-  border-color: rgba(99, 102, 241, 0.45);
-  box-shadow: 0 10px 40px -12px rgba(99, 102, 241, 0.3);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.25);
 }
 
-/* Premium glass card with a gradient top-edge and hover glow */
-.card-premium {
+/* Flat card: solid surface, simple border, no gradient sheen */
+.card-flat {
   position: relative;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 40%), var(--surface);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 0.75rem;
+  transition: border-color 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.card-premium::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(129, 140, 248, 0.5), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.card-premium:hover {
-  transform: translateY(-4px);
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 20px 60px -20px rgba(99, 102, 241, 0.35);
-}
-.card-premium:hover::before {
-  opacity: 1;
+.card-flat:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 
-/* Icon chip used in feature/pipeline cards */
+/* Icon chip — flat solid tint, no gradient */
 .icon-chip {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.65rem;
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(168, 85, 247, 0.1));
-  color: #a5b4fc;
-  transition: all 0.3s ease;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
-.card-premium:hover .icon-chip,
+.card-flat:hover .icon-chip,
 .group:hover .icon-chip {
-  border-color: rgba(129, 140, 248, 0.6);
-  color: #c7d2fe;
-  box-shadow: 0 0 24px -6px rgba(129, 140, 248, 0.5);
+  border-color: var(--accent);
 }
 
-/* Console mock (hero): terminal-style typed lines */
+/* Console mock (product demo): terminal-style typed lines */
 .console-line {
   display: block;
   overflow: hidden;
@@ -285,28 +219,113 @@ body {
 }
 .console-caret::after {
   content: "▍";
-  color: #818cf8;
+  color: var(--accent);
   animation: nx-caret 1s infinite;
 }
 .progress-fill {
   animation: nx-fill 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Sweeping light beam across a container's top edge */
-.beam-edge {
+/* ============================================================
+   Metallic glass — restrained monochrome sheen + frost, reserved for
+   showcase chrome (terminal frame, flip cards). Never colorful.
+   ============================================================ */
+.glass-metal {
   position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
   overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 60px -24px rgba(0, 0, 0, 0.5);
 }
-.beam-edge::after {
+.glass-metal::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 1px;
-  width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(165, 180, 252, 0.8), transparent);
-  animation: nx-beam 3.5s ease-in-out infinite;
+  inset: 0;
+  background: var(--metal-sheen);
+  pointer-events: none;
 }
+.metal-edge {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
+  opacity: 0.5;
+}
+
+/* ============================================================
+   Scroll flip-in cards (metallic panels tilt/rotate into place).
+   ============================================================ */
+.flip-wrap {
+  perspective: 1400px;
+}
+.flip-card {
+  transform-style: preserve-3d;
+  transform: rotateX(-18deg) rotateY(10deg) scale(0.92);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease;
+}
+.flip-card.is-visible {
+  transform: rotateX(0deg) rotateY(0deg) scale(1);
+  opacity: 1;
+}
+
+/* ============================================================
+   Live orchestration demo (looping, ambient — no JS timers).
+   One master fade masks the whole scene at each cycle boundary;
+   children only need to animate their own entrance.
+   ============================================================ */
+@keyframes nx-demo-fade {
+  0% { opacity: 0; }
+  3% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes nx-demo-rise {
+  0% { opacity: 0; transform: translateY(6px); }
+  5% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes nx-demo-chip {
+  0% { opacity: 0; transform: scale(0.85); }
+  6% { opacity: 1; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes nx-demo-typing {
+  0% { width: 0%; }
+  /* steps() on the segment LEADING INTO this keyframe = the type-out itself
+     reveals character-by-character rather than smoothly stretching. */
+  38% { width: 100%; animation-timing-function: steps(24, end); }
+  88% { width: 100%; }              /* hold — fully typed and readable */
+  100% { width: 0%; }               /* reset for the next loop */
+}
+@keyframes nx-demo-progress {
+  0%, 52% { width: 0%; }
+  66% { width: 100%; }
+  100% { width: 100%; }
+}
+@keyframes nx-demo-check {
+  0%, 64% { opacity: 0; transform: translateY(4px); }
+  70% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes nx-demo-pr {
+  0%, 74% { opacity: 0; transform: scale(0.96); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.demo-scene { animation: nx-demo-fade 13s ease-in-out infinite; }
+.demo-task { animation: nx-demo-rise 13s ease-in-out infinite; }
+.demo-chip { animation: nx-demo-chip 13s ease-in-out infinite; }
+.demo-typing { animation: nx-demo-typing 3.4s ease-in-out infinite; }
+.demo-progress { animation: nx-demo-progress 13s ease-in-out infinite; }
+.demo-check { animation: nx-demo-check 13s ease-in-out infinite; }
+.demo-pr { animation: nx-demo-pr 13s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -322,4 +341,10 @@ body {
     transform: none !important;
   }
   .console-line { width: 100% !important; }
+  .flip-card { transform: none !important; opacity: 1 !important; }
+  .demo-scene, .demo-task, .demo-chip, .demo-progress, .demo-check, .demo-pr {
+    opacity: 1 !important;
+  }
+  .demo-typing { width: 100% !important; }
+  .demo-progress { width: 100% !important; }
 }

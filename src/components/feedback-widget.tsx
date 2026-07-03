@@ -37,10 +37,10 @@ export function FeedbackWidget() {
   return (
     <div className="fixed bottom-5 right-5 z-40">
       {open ? (
-        <div className="w-80 rounded-xl border border-zinc-800 bg-[#12121c] p-4 shadow-2xl shadow-black/50">
+        <div className="w-80 rounded-xl border border-border bg-surface p-4 shadow-2xl shadow-black/50">
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-semibold text-white">Send feedback</span>
-            <button onClick={() => setOpen(false)} className="text-zinc-500 transition-colors hover:text-white">
+            <span className="text-sm font-semibold text-foreground">Send feedback</span>
+            <button onClick={() => setOpen(false)} className="text-muted-foreground transition-colors hover:text-foreground">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -49,13 +49,13 @@ export function FeedbackWidget() {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="What worked? What broke? What was confusing?"
             rows={4}
-            className="mb-2 w-full resize-none rounded-lg border border-zinc-700 bg-zinc-900/60 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus-visible:border-indigo-500/70 focus-visible:outline-none"
+            className="mb-2 w-full resize-none rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-accent/70 focus-visible:outline-none"
           />
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email (optional, if you'd like a reply)"
-            className="mb-3 w-full rounded-lg border border-zinc-700 bg-zinc-900/60 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus-visible:border-indigo-500/70 focus-visible:outline-none"
+            className="mb-3 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-accent/70 focus-visible:outline-none"
           />
           <Button variant="primary" size="sm" className="w-full" disabled={sending || !message.trim()} onClick={submit}>
             {sending ? "Sending…" : "Send feedback"}

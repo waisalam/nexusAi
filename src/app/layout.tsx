@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "sonner";
+import { Geist, Geist_Mono, Bebas_Neue } from "next/font/google";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { ThemeProvider, NO_FLASH_SCRIPT } from "@/components/providers/theme-provider";
+import { ThemedToaster } from "@/components/providers/themed-toaster";
 import { FeedbackWidget } from "@/components/feedback-widget";
+import { SmoothScroll } from "@/components/smooth-scroll";
+import { AnimatedNoise } from "@/components/animated-noise";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,6 +15,12 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const bebasNeue = Bebas_Neue({
+  variable: "--font-bebas",
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -27,15 +36,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Sets data-theme before paint — avoids a flash of the wrong theme. */}
+        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-[#0a0a10] text-white antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} relative min-h-screen bg-background text-foreground antialiased`}
       >
-        <QueryProvider>
-          {children}
-          <FeedbackWidget />
-          <Toaster theme="dark" position="top-right" toastOptions={{ style: { background: "#171724", border: "1px solid #232328", color: "#fafafa" } }} />
-        </QueryProvider>
+        <ThemeProvider>
+          <QueryProvider>
+            <SmoothScroll>
+              <AnimatedNoise opacity={0.02} fixed />
+              {children}
+              <FeedbackWidget />
+              <ThemedToaster />
+            </SmoothScroll>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

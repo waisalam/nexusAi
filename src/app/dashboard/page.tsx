@@ -8,6 +8,7 @@ import { StatsOverview } from "@/components/dashboard/stats-overview";
 import { ProjectCard } from "@/components/dashboard/project-card";
 import { useProjects } from "@/hooks/use-projects";
 import { useAuth } from "@/hooks/use-auth";
+import { HighlightText } from "@/components/highlight-text";
 
 const ONBOARD = [
   { icon: GithubIcon, title: "Connect a repository", desc: "Paste a GitHub URL. We clone & analyze it once, then remember it." },
@@ -27,10 +28,10 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Welcome{user?.full_name ? `, ${user.full_name.split(" ")[0]}` : ""}
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            <HighlightText>Welcome{user?.full_name ? `, ${user.full_name.split(" ")[0]}` : ""}</HighlightText>
           </h1>
-          <p className="mt-1 text-zinc-400">Your autonomous engineering workspace</p>
+          <p className="mt-1 font-mono text-xs uppercase tracking-widest text-muted-foreground">Your autonomous engineering workspace</p>
         </div>
         <Button variant="primary" onClick={() => router.push("/dashboard/projects?new=true")}>
           <Plus className="h-4 w-4" /> Connect Repository
@@ -41,35 +42,32 @@ export default function DashboardPage() {
 
       {/* Onboarding (only when no projects) */}
       {!isLoading && !hasProjects && (
-        <div className="animate-scale-in relative overflow-hidden rounded-2xl border border-zinc-800 bg-[#12121c] p-8">
-          <div className="glow-blob animate-glow-pulse" style={{ width: 320, height: 320, top: -120, right: -80 }} />
-          <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-950/30 px-3 py-1 text-xs text-indigo-200">
-              <Sparkles className="h-3.5 w-3.5" /> Get started in 3 steps
-            </div>
-            <h2 className="mt-4 text-xl font-bold">Deploy your first AI engineering team</h2>
-            <div className="mt-6 grid gap-4 md:grid-cols-3">
-              {ONBOARD.map((step, i) => (
-                <div key={step.title} className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-950/60 text-sm font-bold text-indigo-300">
-                      {i + 1}
-                    </span>
-                    <step.icon className="h-4 w-4 text-zinc-500" />
-                  </div>
-                  <h3 className="mt-3 text-sm font-semibold text-white">{step.title}</h3>
-                  <p className="mt-1 text-sm text-zinc-400">{step.desc}</p>
+        <div className="animate-scale-in rounded-2xl border border-border bg-surface p-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs text-accent">
+            <Sparkles className="h-3.5 w-3.5" /> Get started in 3 steps
+          </div>
+          <h2 className="mt-4 text-xl font-bold text-foreground">Deploy your first AI engineering team</h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {ONBOARD.map((step, i) => (
+              <div key={step.title} className="rounded-xl border border-border bg-surface-2 p-5">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15 text-sm font-bold text-accent">
+                    {i + 1}
+                  </span>
+                  <step.icon className="h-4 w-4 text-muted-foreground" />
                 </div>
-              ))}
-            </div>
-            <div className="mt-6 flex gap-3">
-              <Button variant="primary" onClick={() => router.push("/dashboard/projects?new=true")}>
-                <GithubIcon className="h-4 w-4" /> Connect your first repo
-              </Button>
-              <Button variant="outline" onClick={() => router.push("/dashboard/how-it-works")}>
-                How it works <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
+                <h3 className="mt-3 text-sm font-semibold text-foreground">{step.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 flex gap-3">
+            <Button variant="primary" onClick={() => router.push("/dashboard/projects?new=true")}>
+              <GithubIcon className="h-4 w-4" /> Connect your first repo
+            </Button>
+            <Button variant="outline" onClick={() => router.push("/dashboard/how-it-works")}>
+              How it works <ArrowRight className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       )}
@@ -78,7 +76,7 @@ export default function DashboardPage() {
       {(isLoading || hasProjects) && (
         <div>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Your Projects</h2>
+            <h2 className="text-lg font-semibold text-foreground">Your Projects</h2>
             {hasProjects && (
               <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard/projects")}>
                 View all <ArrowRight className="h-3.5 w-3.5" />

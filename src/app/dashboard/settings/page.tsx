@@ -45,15 +45,15 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Email</label>
+            <label className="text-sm font-medium text-foreground">Email</label>
             <Input value={user.email} disabled />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Username</label>
+            <label className="text-sm font-medium text-foreground">Username</label>
             <Input value={username} onChange={(e) => setUsername(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Full Name</label>
+            <label className="text-sm font-medium text-foreground">Full Name</label>
             <Input value={fullName} onChange={(e) => setFullName(e.target.value)} />
           </div>
           <Button variant="primary" onClick={handleSave} disabled={saving}>
@@ -68,7 +68,7 @@ export default function SettingsPage() {
           <CardDescription>Manage your OAuth connections</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex items-center justify-between rounded-lg border border-zinc-800 p-4">
+          <div className="flex items-center justify-between rounded-lg border border-border p-4">
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium">GitHub</span>
             </div>
@@ -78,7 +78,7 @@ export default function SettingsPage() {
               <Badge variant="default">Not connected</Badge>
             )}
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-zinc-800 p-4">
+          <div className="flex items-center justify-between rounded-lg border border-border p-4">
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium">Google</span>
             </div>

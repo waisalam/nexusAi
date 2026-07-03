@@ -43,36 +43,36 @@ export function SignupForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <label className="text-sm font-medium text-zinc-300">Full Name</label>
+        <label className="text-sm font-medium text-foreground">Full Name</label>
         <Input placeholder="John Doe" {...register("full_name")} />
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-zinc-300">Username</label>
+        <label className="text-sm font-medium text-foreground">Username</label>
         <Input placeholder="johndoe" {...register("username")} />
-        {errors.username && <p className="text-xs text-red-400">{errors.username.message}</p>}
+        {errors.username && <p className="text-xs text-destructive">{errors.username.message}</p>}
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-zinc-300">Email</label>
+        <label className="text-sm font-medium text-foreground">Email</label>
         <Input type="email" placeholder="you@example.com" {...register("email")} />
-        {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
+        {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-zinc-300">Password</label>
+        <label className="text-sm font-medium text-foreground">Password</label>
         <Input type="password" placeholder="••••••••" {...register("password")} />
-        {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+        {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-zinc-300">Confirm Password</label>
+        <label className="text-sm font-medium text-foreground">Confirm Password</label>
         <Input type="password" placeholder="••••••••" {...register("confirmPassword")} />
-        {errors.confirmPassword && <p className="text-xs text-red-400">{errors.confirmPassword.message}</p>}
+        {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>}
       </div>
 
       {error && (
-        <div className="animate-fade-in rounded-lg border border-red-900/60 bg-red-950/50 p-3 text-sm text-red-300">
+        <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
           {error}
         </div>
       )}

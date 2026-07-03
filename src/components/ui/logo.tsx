@@ -7,7 +7,7 @@ interface LogoProps {
   wordClassName?: string;
 }
 
-/** Nexus AI mark — a connected node graph (the "nexus") in indigo→violet. */
+/** Nexus AI mark — a connected node graph (the "nexus") in one solid accent color. */
 export function LogoMark({ className, size = 28 }: { className?: string; size?: number }) {
   return (
     <svg
@@ -18,26 +18,20 @@ export function LogoMark({ className, size = 28 }: { className?: string; size?: 
       className={className}
       aria-hidden="true"
     >
-      <defs>
-        <linearGradient id="nx-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#818cf8" />
-          <stop offset="1" stopColor="#a855f7" />
-        </linearGradient>
-      </defs>
       <path
         d="M16 3 L27 9.5 V22.5 L16 29 L5 22.5 V9.5 Z"
-        stroke="url(#nx-grad)"
+        stroke="currentColor"
         strokeWidth="1.6"
         strokeLinejoin="round"
-        opacity="0.5"
+        opacity="0.45"
       />
-      <line x1="16" y1="16" x2="16" y2="6" stroke="url(#nx-grad)" strokeWidth="1.4" />
-      <line x1="16" y1="16" x2="24" y2="20.5" stroke="url(#nx-grad)" strokeWidth="1.4" />
-      <line x1="16" y1="16" x2="8" y2="20.5" stroke="url(#nx-grad)" strokeWidth="1.4" />
-      <circle cx="16" cy="16" r="3.4" fill="url(#nx-grad)" />
-      <circle cx="16" cy="6" r="2.1" fill="#818cf8" />
-      <circle cx="24" cy="20.5" r="2.1" fill="#8b5cf6" />
-      <circle cx="8" cy="20.5" r="2.1" fill="#a855f7" />
+      <line x1="16" y1="16" x2="16" y2="6" stroke="currentColor" strokeWidth="1.4" />
+      <line x1="16" y1="16" x2="24" y2="20.5" stroke="currentColor" strokeWidth="1.4" />
+      <line x1="16" y1="16" x2="8" y2="20.5" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="16" cy="16" r="3.4" fill="currentColor" />
+      <circle cx="16" cy="6" r="2.1" fill="currentColor" />
+      <circle cx="24" cy="20.5" r="2.1" fill="currentColor" />
+      <circle cx="8" cy="20.5" r="2.1" fill="currentColor" />
     </svg>
   );
 }
@@ -53,11 +47,11 @@ export function GithubIcon({ className }: { className?: string }) {
 
 export function Logo({ className, size = 28, showWord = true, wordClassName }: LogoProps) {
   return (
-    <div className={cn("flex items-center gap-2.5", className)}>
+    <div className={cn("flex items-center gap-2.5 text-accent", className)}>
       <LogoMark size={size} />
       {showWord && (
-        <span className={cn("text-lg font-bold tracking-tight text-white", wordClassName)}>
-          Nexus<span className="text-gradient-brand"> AI</span>
+        <span className={cn("text-lg font-bold tracking-tight text-foreground", wordClassName)}>
+          Nexus<span className="text-accent"> AI</span>
         </span>
       )}
     </div>

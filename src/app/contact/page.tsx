@@ -29,24 +29,24 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0a10] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
-        <Link href="/dashboard" className="mb-6 inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-300">
+        <Link href="/dashboard" className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
 
         {done ? (
-          <div className="rounded-2xl border border-zinc-800 bg-[#12121c] p-8 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-indigo-500/40 bg-indigo-950/50 text-indigo-300">
+          <div className="rounded-2xl border border-border bg-surface p-8 text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent">
               <Check className="h-6 w-6" />
             </div>
-            <h1 className="mb-2 text-xl font-semibold text-white">Thanks — we&apos;ll be in touch</h1>
-            <p className="text-sm text-zinc-400">We got your request and will email you at {email} soon.</p>
+            <h1 className="mb-2 text-xl font-semibold text-foreground">Thanks — we&apos;ll be in touch</h1>
+            <p className="text-sm text-muted-foreground">We got your request and will email you at {email} soon.</p>
           </div>
         ) : (
-          <div className="rounded-2xl border border-zinc-800 bg-[#12121c] p-8">
-            <h1 className="mb-1 text-2xl font-semibold text-white">Get a custom plan</h1>
-            <p className="mb-6 text-sm text-zinc-400">
+          <div className="rounded-2xl border border-border bg-surface p-8">
+            <h1 className="mb-1 text-2xl font-semibold text-foreground">Get a custom plan</h1>
+            <p className="mb-6 text-sm text-muted-foreground">
               Out of free runs, or need more for your team? Tell us what you&apos;re building and we&apos;ll set you up.
             </p>
             <div className="space-y-3">
@@ -57,7 +57,7 @@ export default function ContactPage() {
                 rows={4}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full resize-none rounded-lg border border-zinc-700 bg-zinc-900/60 px-3.5 py-2 text-sm text-white placeholder:text-zinc-500 focus-visible:border-indigo-500/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/20"
+                className="w-full resize-none rounded-lg border border-border bg-surface px-3.5 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-accent/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20"
               />
               <Button
                 variant="primary"

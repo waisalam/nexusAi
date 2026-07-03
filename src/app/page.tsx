@@ -1,15 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight, GitBranch, ShieldCheck, Workflow, Zap, GitPullRequest,
-  Cpu, Layers, Network, Sparkles, CheckCircle2, Lock, Eye, Bot,
+  Cpu, Layers, Network, CheckCircle2, Lock, Eye, Bot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo, LogoMark, GithubIcon } from "@/components/ui/logo";
 import { Reveal } from "@/components/ui/reveal";
+import { FlipReveal } from "@/components/ui/flip-reveal";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { SideNav } from "@/components/side-nav";
+import { HighlightText } from "@/components/highlight-text";
+import { ScrambleTextOnHover } from "@/components/scramble-text";
+import { SplitFlapAudioProvider, SplitFlapText, SplitFlapMuteToggle } from "@/components/split-flap-text";
+import { BitmapChevron } from "@/components/bitmap-chevron";
+
+if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
+
+const NAV_SECTIONS = [
+  { id: "hero", label: "Home" },
+  { id: "demo", label: "Live Demo" },
+  { id: "about", label: "About" },
+  { id: "how-it-works", label: "How it works" },
+  { id: "features", label: "Features" },
+  { id: "cta", label: "Get started" },
+];
 
 const PIPELINE = [
   {
@@ -35,12 +55,12 @@ const PIPELINE = [
 ];
 
 const FEATURES = [
-  { icon: Zap, title: "Truly parallel", desc: "A whole team works at once on disjoint files — minutes, not hours.", span: true },
+  { icon: Zap, title: "Truly parallel", desc: "A whole team works at once on disjoint files — minutes, not hours." },
   { icon: ShieldCheck, title: "Conflict-free by design", desc: "Files are partitioned up front, so agents never edit each other's code." },
   { icon: Cpu, title: "Project memory", desc: "Every run teaches the system — edits, errors and fixes feed the next run." },
   { icon: Workflow, title: "Self-healing builds", desc: "Failed builds trigger an auto-fix loop before anything is ever pushed." },
   { icon: Eye, title: "Live run view", desc: "Watch every agent's logs, the pipeline and the orchestrator brain in real time." },
-  { icon: GitPullRequest, title: "One PR, every time", desc: "All the work lands as a single, reviewable, build-verified pull request.", span: true },
+  { icon: GitPullRequest, title: "One PR, every time", desc: "All the work lands as a single, reviewable, build-verified pull request." },
 ];
 
 const TRUST = [
@@ -49,78 +69,191 @@ const TRUST = [
   { icon: GitPullRequest, text: "Only PR access — never a direct push to main" },
 ];
 
-/** Animated product mock: the orchestration console "running" a task. Pure CSS. */
-function ConsoleMock() {
-  const agents = [
-    { name: "Nova", color: "text-indigo-300", file: "pricing/page.tsx", delay: 2.2 },
-    { name: "Atlas", color: "text-violet-300", file: "pricing-card.tsx", delay: 2.7 },
-    { name: "Lyra", color: "text-fuchsia-300", file: "header.tsx", delay: 3.2 },
-  ];
+const AGENTS = [
+  { name: "Nova", lines: ["Writing checkout/page.tsx", "Building page layout", "Linking to cart"] },
+  { name: "Atlas", lines: ["Creating PaymentForm.tsx", "Adding Stripe SDK", "Handling card input"] },
+  { name: "Orion", lines: ["Writing api/webhook.ts", "Verifying signature", "Updating order status"] },
+  { name: "Vega", lines: ["Building OrderSummary.tsx", "Calculating totals", "Adding tax logic"] },
+  { name: "Lyra", lines: ["Writing checkout.test.ts", "Testing payment flow", "Mocking Stripe API"] },
+  { name: "Iris", lines: ["Updating types.ts", "Adding CheckoutState", "Fixing type error"] },
+  { name: "Echo", lines: ["Styling checkout form", "Adding loading state", "Polishing UI"] },
+  { name: "Sol", lines: ["Wiring navigation", "Updating routes.ts", "Linking success page"] },
+];
+
+/** Live orchestration demo — a large metallic glass terminal that loops
+ * continuously (no JS timers; one shared CSS cycle so every element stays in
+ * sync). Sized to fill its wrapper (90vw × 90vh), so the internals scale up
+ * with it — this is meant to read as a big showcase panel, not a small card. */
+function OrchestrationTerminal() {
   return (
-    <div className="beam-edge relative rounded-2xl border border-[#26263a] bg-[#0d0d16]/90 shadow-2xl shadow-indigo-950/40 backdrop-blur">
-      {/* window chrome */}
-      <div className="flex items-center gap-2 border-b border-[#1e1e30] px-4 py-3">
-        <span className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
-        <span className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
-        <span className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
-        <span className="ml-3 font-mono text-xs text-zinc-500">nexus · orchestration run</span>
-        <span className="ml-auto flex items-center gap-1.5 text-[10px] font-medium text-emerald-400">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          </span>
+    <div className="glass-metal flex h-full w-full flex-col">
+      <div className="metal-edge" />
+      <div className="relative flex shrink-0 items-center gap-2.5 border-b border-border px-6 py-4 sm:px-8 sm:py-5">
+        <span className="h-3 w-3 rounded-full border border-border" />
+        <span className="h-3 w-3 rounded-full border border-border" />
+        <span className="h-3 w-3 rounded-full border border-border" />
+        <span className="ml-3 font-mono text-sm text-muted-foreground">nexus · orchestration run</span>
+        <span className="ml-auto flex items-center gap-2 text-xs font-medium text-accent">
+          <span className="h-2 w-2 rounded-full bg-accent" />
           LIVE
         </span>
       </div>
 
-      <div className="space-y-3 p-4 font-mono text-xs">
-        {/* the task */}
-        <div className="rounded-lg border border-[#1e1e30] bg-[#12121c] p-3">
-          <span className="text-zinc-500">task</span>
-          <span className="console-caret ml-2 text-zinc-200">Build the pricing page</span>
+      <div className="demo-scene relative flex flex-1 flex-col justify-center gap-6 overflow-hidden p-6 sm:gap-8 sm:p-10 lg:p-14">
+        {/* Task */}
+        <div className="demo-task shrink-0 rounded-xl border border-border bg-surface-2 p-4 font-mono text-sm sm:p-5 sm:text-base">
+          <span className="text-muted-foreground">task</span>
+          <span className="console-caret ml-2 text-foreground">Build a checkout flow with Stripe</span>
         </div>
 
-        {/* agents working in parallel */}
-        <div className="grid grid-cols-3 gap-2">
-          {agents.map((a) => (
-            <div key={a.name} className="rounded-lg border border-[#1e1e30] bg-[#12121c] p-2.5">
-              <div className="mb-2 flex items-center gap-1.5">
-                <Bot className={`h-3 w-3 ${a.color}`} />
-                <span className={`text-[10px] font-semibold ${a.color}`}>{a.name}</span>
+        {/* 8 agents working simultaneously */}
+        <div className="shrink-0">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground sm:text-sm">
+            8 agents deployed — working simultaneously
+          </p>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+            {AGENTS.map((agent, i) => (
+              <div
+                key={agent.name}
+                className="demo-chip rounded-xl border border-border bg-surface-2 p-4"
+                style={{ animationDelay: `${i * 0.12}s` }}
+              >
+                <div className="mb-3 flex items-center gap-2">
+                  <Bot className="h-4 w-4 text-accent" />
+                  <span className="text-sm font-semibold text-foreground">{agent.name}</span>
+                </div>
+                <div className="space-y-1.5 font-mono">
+                  {agent.lines.map((line, li) => (
+                    <span
+                      key={li}
+                      className="demo-typing block overflow-hidden whitespace-nowrap text-[11px] text-muted-foreground"
+                      style={{ animationDelay: `${i * 0.18 + li * 0.35}s` }}
+                    >
+                      {line}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <p className="mb-1.5 truncate text-[9px] text-zinc-600">{a.file}</p>
-              <div className="space-y-1">
-                {[0, 1, 2].map((line) => (
-                  <span
-                    key={line}
-                    className="console-line h-1.5 rounded-sm bg-linear-to-r from-indigo-500/50 to-violet-500/30"
-                    style={{ animationDelay: `${a.delay + line * 0.45}s`, maxWidth: `${90 - line * 18}%` }}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* build + PR */}
-        <div className="rounded-lg border border-[#1e1e30] bg-[#12121c] p-3">
-          <div className="flex items-center justify-between text-[10px]">
-            <span className="text-zinc-500">integrate → build → verify</span>
-            <span className="animate-fade-in text-emerald-400" style={{ animationDelay: "6.4s", opacity: 0 }}>✓ build passed</span>
-          </div>
-          <div className="mt-2 h-1 overflow-hidden rounded-full bg-[#1e1e30]">
-            <div className="progress-fill h-full rounded-full bg-linear-to-r from-indigo-500 to-violet-500" style={{ animationDelay: "5s", width: 0 }} />
+            ))}
           </div>
         </div>
 
-        <div className="animate-fade-up flex items-center justify-between rounded-lg border border-indigo-500/30 bg-indigo-500/10 p-3" style={{ animationDelay: "6.8s", opacity: 0 }}>
-          <span className="flex items-center gap-2 text-indigo-200">
-            <GitPullRequest className="h-3.5 w-3.5" /> PR #16 · one build-verified pull request
+        {/* Build + verify */}
+        <div className="shrink-0 rounded-xl border border-border bg-surface-2 p-4 sm:p-5">
+          <div className="mb-3 flex items-center justify-between font-mono text-xs text-muted-foreground sm:text-sm">
+            <span>integrate → build → verify</span>
+          </div>
+          <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-border">
+            <div className="demo-progress h-full rounded-full bg-accent" />
+          </div>
+          <div className="demo-check flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-xs text-accent sm:text-sm">
+            <span>✓ merged</span>
+            <span>✓ build</span>
+            <span>✓ tests</span>
+            <span>✓ runtime</span>
+          </div>
+        </div>
+
+        {/* Result PR */}
+        <div className="demo-pr flex shrink-0 items-center justify-between rounded-xl border border-accent/30 bg-accent/10 p-4 sm:p-5">
+          <span className="flex items-center gap-2.5 text-base text-foreground">
+            <GitPullRequest className="h-4 w-4 text-accent" /> PR #16 · one build-verified pull request
           </span>
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+          <CheckCircle2 className="h-4 w-4 text-accent" />
         </div>
       </div>
     </div>
+  );
+}
+
+function Hero({ authed, router }: { authed: boolean; router: ReturnType<typeof useRouter> }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current || !contentRef.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      gsap.to(contentRef.current, {
+        y: -80,
+        opacity: 0,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
+        },
+      });
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="hero"
+      className="relative flex min-h-[92vh] items-center pl-6 pr-6 md:pl-12 md:pr-12"
+    >
+      {/* Vertical edge label */}
+      <div className="absolute left-4 top-1/2 hidden -translate-y-1/2 md:left-6 md:block">
+        <span className="block origin-left -rotate-90 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          Agents
+        </span>
+      </div>
+
+      <div ref={contentRef} className="mx-auto w-full max-w-5xl">
+        <SplitFlapAudioProvider>
+          <div className="relative flex items-end justify-between gap-4">
+            <SplitFlapText
+              text="NEXUS AI"
+              speed={70}
+              className="text-6xl font-bold tracking-tight text-foreground sm:text-8xl lg:text-9xl"
+            />
+            <SplitFlapMuteToggle className="mb-2 shrink-0" />
+          </div>
+        </SplitFlapAudioProvider>
+
+        <h2 className="mt-5 font-[var(--font-bebas)] text-[clamp(1.25rem,3.2vw,2.25rem)] tracking-wide text-muted-foreground">
+          One task in. One verified pull request out.
+        </h2>
+
+        <p className="mt-8 max-w-xl font-mono text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Nexus AI splits your task across a team of AI agents that code in parallel on separate
+          files, integrates their work, and verifies the build — it even runs your app to prove
+          it works.
+        </p>
+
+        <div className="mt-14 flex flex-wrap items-center gap-8">
+          <button
+            onClick={() => router.push(authed ? "/dashboard" : "/signup")}
+            className="group inline-flex items-center gap-3 border border-foreground/20 px-6 py-3 font-mono text-xs uppercase tracking-widest text-foreground transition-all duration-200 hover:border-accent hover:text-accent"
+          >
+            <ScrambleTextOnHover text={authed ? "Open Dashboard" : "Start Building"} duration={0.5} />
+            <BitmapChevron className="transition-transform duration-[400ms] ease-in-out group-hover:rotate-45" />
+          </button>
+          <button
+            onClick={() => router.push("/login")}
+            className="font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors duration-200 hover:text-foreground"
+          >
+            Continue with GitHub
+          </button>
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+          <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> Free runs</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> No card</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> Any repo</span>
+        </div>
+      </div>
+
+      {/* Floating build tag */}
+      <div className="absolute bottom-8 right-6 md:bottom-12 md:right-12">
+        <div className="border border-border px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          LIVE / Autonomous Build
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -135,17 +268,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0a0a10]">
-      {/* Background: drifting aurora + grid */}
-      <div className="glow-blob animate-aurora" style={{ width: 700, height: 700, top: -260, left: "8%" }} />
-      <div className="glow-blob glow-blob-violet animate-aurora" style={{ width: 600, height: 600, top: -160, right: "-10%", animationDelay: "-6s" }} />
-      <div className="grid-bg pointer-events-none absolute inset-0 opacity-40 mask-[radial-gradient(ellipse_at_top,black,transparent_70%)]" />
+    <div className="min-h-screen bg-background md:pl-20">
+      <SideNav items={NAV_SECTIONS} />
 
       {/* Nav */}
-      <header className="relative z-20">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+      <header className="border-b border-border">
+        <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-8 py-5">
           <Logo />
           <div className="flex items-center gap-2">
+            <ThemeToggle className="mr-1" />
             {authed ? (
               <Button variant="primary" onClick={() => router.push("/dashboard")}>
                 Open Dashboard <ArrowRight className="h-4 w-4" />
@@ -164,161 +295,132 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* Hero — copy left, live console right */}
-      <section className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-6 pb-24 pt-14 lg:grid-cols-2">
-        <div>
-          <div className="animate-fade-down inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs text-indigo-200">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-400" />
-            </span>
-            Autonomous engineering teams
-          </div>
+      <Hero authed={authed} router={router} />
 
-          <h1 className="animate-fade-up delay-75 mt-6 text-5xl font-bold leading-[1.04] tracking-tight sm:text-6xl">
-            One task in.
-            <br />
-            <span className="text-gradient-animated">One verified PR out.</span>
-          </h1>
-
-          <p className="animate-fade-up delay-150 mt-6 max-w-xl text-lg leading-relaxed text-zinc-400">
-            Nexus AI splits your task across a team of AI agents that code in parallel on
-            separate files, integrates their work, verifies the build —
-            <span className="text-zinc-200"> and even runs your app to prove it works.</span>
-          </p>
-
-          <div className="animate-fade-up delay-300 mt-9 flex flex-col gap-3 sm:flex-row">
-            <Button variant="primary" size="lg" onClick={() => router.push(authed ? "/dashboard" : "/signup")}>
-              {authed ? "Open Dashboard" : "Start building free"} <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="lg" onClick={() => router.push("/login")}>
-              <GithubIcon className="h-4 w-4" /> Continue with GitHub
-            </Button>
-          </div>
-
-          <div className="animate-fade-up delay-500 mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-zinc-500">
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" /> Free runs to start</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" /> No credit card</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" /> Works with any repo</span>
-          </div>
-        </div>
-
-        <div className="animate-fade-up delay-300 relative">
-          <div className="absolute -inset-6 rounded-3xl bg-linear-to-tr from-indigo-500/10 via-transparent to-violet-500/10 blur-2xl" />
-          <ConsoleMock />
+      {/* Live orchestration demo — a large square-ish metallic showcase panel,
+          sized to the viewport (not the page's max-width) so 90vw/90vh are true
+          viewport fractions rather than being capped by a narrower parent. */}
+      <section id="demo" className="flex justify-center pb-24">
+        <div className="animate-fade-up delay-300 h-[90vh] w-[90vw] max-w-[1400px]">
+          <OrchestrationTerminal />
         </div>
       </section>
 
       {/* What is Nexus AI */}
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-16">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-400">What is Nexus AI</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-            Not one assistant. A whole engineering team.
-          </h2>
-          <p className="mt-4 leading-relaxed text-zinc-400">
-            Most AI tools give you a single chat that edits one file at a time. Nexus AI deploys
-            many specialized agents that divide the work, run at the same time, and coordinate
-            so the result is integrated, verified, and ready to merge.
-          </p>
-        </Reveal>
+      <section id="about" className="border-t border-border">
+        <div className="mx-auto max-w-[1600px] px-8 py-16">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-accent">What is Nexus AI</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Not one assistant. <HighlightText>A whole engineering team.</HighlightText>
+            </h2>
+            <p className="mt-4 leading-relaxed text-muted-foreground">
+              Most AI tools give you a single chat that edits one file at a time. Nexus AI deploys
+              many specialized agents that divide the work, run at the same time, and coordinate
+              so the result is integrated, verified, and ready to merge.
+            </p>
+          </Reveal>
+        </div>
       </section>
 
-      {/* Pipeline */}
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
-        <Reveal className="mb-14 text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-400">How it works</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">From one task to one pull request</h2>
-        </Reveal>
+      {/* Pipeline — metallic cards that flip into place on scroll */}
+      <section id="how-it-works" className="border-t border-border">
+        <div className="mx-auto max-w-[1600px] px-8 py-16">
+          <Reveal className="mb-14 text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-accent">How it works</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">From one task to one pull request</h2>
+          </Reveal>
 
-        <div className="relative grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {/* connector rail (desktop) */}
-          <div className="pointer-events-none absolute left-[12%] right-[12%] top-10 hidden h-px bg-linear-to-r from-transparent via-indigo-500/40 to-transparent lg:block" />
-          {PIPELINE.map((step, i) => (
-            <Reveal key={step.title} delay={i * 110}>
-              <div className="card-premium group h-full p-6">
+          <div className="flip-wrap grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {PIPELINE.map((step, i) => (
+              <FlipReveal key={step.title} delay={i * 100} className="card-flat group h-full p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="icon-chip h-11 w-11">
                     <step.icon className="h-5 w-5" />
                   </div>
-                  <span className="font-mono text-[11px] font-bold tracking-widest text-zinc-600">0{i + 1}</span>
+                  <span className="font-mono text-[11px] font-bold tracking-widest text-muted-foreground">0{i + 1}</span>
                 </div>
-                <h3 className="text-base font-semibold text-white">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">{step.desc}</p>
-              </div>
-            </Reveal>
-          ))}
+                <h3 className="text-base font-semibold text-foreground">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
+              </FlipReveal>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Features — bento grid */}
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-20">
-        <Reveal className="mb-12 text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-400">Why teams choose it</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Built for speed and trust</h2>
-        </Reveal>
+      {/* Features — same flip-card treatment */}
+      <section id="features" className="border-t border-border">
+        <div className="mx-auto max-w-[1600px] px-8 py-16">
+          <Reveal className="mb-12 text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-accent">Why teams choose it</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Built for speed and trust</h2>
+          </Reveal>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURES.map((f, i) => (
-            <Reveal key={f.title} delay={(i % 4) * 80} className={f.span ? "lg:col-span-2" : ""}>
-              <div className="card-premium group h-full p-6">
+          <div className="flip-wrap grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((f, i) => (
+              <FlipReveal key={f.title} delay={(i % 3) * 90} className="card-flat h-full p-6">
                 <div className="icon-chip h-10 w-10">
                   <f.icon className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-white">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">{f.desc}</p>
-              </div>
-            </Reveal>
-          ))}
+                <h3 className="mt-4 text-base font-semibold text-foreground">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+              </FlipReveal>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Security strip */}
-      <section className="relative z-10 mx-auto max-w-6xl px-6 pb-8">
-        <Reveal>
-          <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-[#26263a] bg-[#12121c]/60 px-6 py-6 text-sm text-zinc-400 sm:flex-row sm:gap-10">
-            {TRUST.map((t) => (
-              <span key={t.text} className="flex items-center gap-2">
-                <t.icon className="h-4 w-4 text-indigo-400" /> {t.text}
-              </span>
-            ))}
-          </div>
-        </Reveal>
+      {/* Trust strip */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1600px] px-8 py-8">
+          <Reveal>
+            <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-surface px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:gap-10">
+              {TRUST.map((t) => (
+                <span key={t.text} className="flex items-center gap-2">
+                  <t.icon className="h-4 w-4 text-accent" /> {t.text}
+                </span>
+              ))}
+            </div>
+          </Reveal>
+        </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="relative z-10 mx-auto max-w-4xl px-6 pb-28 pt-14">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-linear-to-b from-indigo-950/40 to-[#12121c] p-10 text-center sm:p-14">
-            <div className="glow-blob animate-glow-pulse" style={{ width: 400, height: 400, bottom: -200, left: "50%", transform: "translateX(-50%)" }} />
-            <LogoMark size={44} className="animate-float mx-auto" />
-            <h2 className="relative mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
-              Connect a repo. Deploy your team.
-            </h2>
-            <p className="relative mx-auto mt-3 max-w-md text-zinc-400">
-              Sign up, paste a GitHub URL, describe what you want — and watch a team of agents build it.
-            </p>
-            <div className="relative mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button variant="primary" size="lg" onClick={() => router.push(authed ? "/dashboard" : "/signup")}>
-                <Sparkles className="h-4 w-4" /> {authed ? "Open Dashboard" : "Create your account"}
-              </Button>
-              <Button variant="outline" size="lg" onClick={() => router.push("/login")}>
-                Sign in
-              </Button>
+      {/* Final CTA — metallic glass panel */}
+      <section id="cta" className="border-t border-border">
+        <div className="mx-auto max-w-[1600px] px-8 py-24">
+          <Reveal>
+            <div className="glass-metal mx-auto max-w-4xl p-10 text-center sm:p-14">
+              <div className="metal-edge" />
+              <LogoMark size={40} className="relative mx-auto text-accent" />
+              <h2 className="relative mt-5 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Connect a repo. <HighlightText>Deploy your team.</HighlightText>
+              </h2>
+              <p className="relative mx-auto mt-3 max-w-lg text-muted-foreground">
+                Sign up, paste a GitHub URL, describe what you want — and watch a team of agents build it.
+              </p>
+              <div className="relative mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Button variant="primary" size="lg" onClick={() => router.push(authed ? "/dashboard" : "/signup")}>
+                  <ScrambleTextOnHover text={authed ? "Open Dashboard" : "Create your account"} duration={0.5} />
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="lg" onClick={() => router.push("/login")}>
+                  Sign in
+                </Button>
+              </div>
             </div>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-[#1a1a2a]">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-zinc-500 sm:flex-row">
+      <footer className="border-t border-border">
+        <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-between gap-4 px-8 py-8 text-sm text-muted-foreground sm:flex-row">
           <Logo size={22} wordClassName="text-base" />
           <p>© {new Date().getFullYear()} Nexus AI · Autonomous engineering teams</p>
           <div className="flex gap-5">
-            <Link href="/login" className="hover:text-zinc-300">Sign in</Link>
-            <Link href="/signup" className="hover:text-zinc-300">Get started</Link>
-            <Link href="/contact" className="hover:text-zinc-300">Contact</Link>
+            <Link href="/login" className="hover:text-foreground"><ScrambleTextOnHover text="Sign in" duration={0.4} /></Link>
+            <Link href="/signup" className="hover:text-foreground"><ScrambleTextOnHover text="Get started" duration={0.4} /></Link>
+            <Link href="/contact" className="hover:text-foreground"><ScrambleTextOnHover text="Contact" duration={0.4} /></Link>
           </div>
         </div>
       </footer>

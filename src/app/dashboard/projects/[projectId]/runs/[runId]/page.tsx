@@ -28,12 +28,12 @@ const PIPELINE = [
 const STAGE_KEYS = PIPELINE.map((s) => s.key);
 
 const brainLogColors: Record<string, string> = {
-  plan: "text-amber-400",
-  code: "text-blue-400",
-  build: "text-violet-400",
-  lock: "text-orange-400",
-  error: "text-red-400",
-  status: "text-emerald-400",
+  plan: "text-amber-600",
+  code: "text-blue-600",
+  build: "text-accent",
+  lock: "text-orange-600",
+  error: "text-destructive",
+  status: "text-accent",
 };
 
 export default function RunDetailPage() {
@@ -60,7 +60,7 @@ export default function RunDetailPage() {
 
   if (!project || !run) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh] text-zinc-500">
+      <div className="flex items-center justify-center min-h-[60vh] text-muted-foreground">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
         Loading run...
       </div>
@@ -120,13 +120,13 @@ export default function RunDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link href={`/dashboard/projects/${projectId}`}>
-            <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-100">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-zinc-100">{project.name}</h1>
-            <div className="flex items-center gap-3 text-xs text-zinc-500 mt-0.5">
+            <h1 className="text-xl font-bold text-foreground">{project.name}</h1>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
               <span>Run #{run.id.slice(0, 8)}</span>
               <span className="capitalize">{run.mode} mode</span>
               <span className="flex items-center gap-1">
@@ -138,15 +138,15 @@ export default function RunDetailPage() {
         </div>
         <div className="flex items-center gap-3">
           {isFailed ? (
-            <span className="flex items-center gap-1.5 text-sm font-medium text-red-400">
+            <span className="flex items-center gap-1.5 text-sm font-medium text-destructive">
               <XCircle className="h-4 w-4" /> Failed
             </span>
           ) : run.status === "completed" ? (
-            <span className="flex items-center gap-1.5 text-sm font-medium text-emerald-400">
+            <span className="flex items-center gap-1.5 text-sm font-medium text-accent">
               <CheckCircle className="h-4 w-4" /> Completed
             </span>
           ) : (
-            <span className="flex items-center gap-1.5 text-sm font-medium text-blue-400">
+            <span className="flex items-center gap-1.5 text-sm font-medium text-blue-600">
               <Loader2 className="h-4 w-4 animate-spin" />
               {run.status.replace(/_/g, " ")}
             </span>
@@ -161,13 +161,13 @@ export default function RunDetailPage() {
 
       {/* Plan-approval gate — shows the FULL plan right here, next to Approve */}
       {awaitingApproval && (
-        <div className="rounded-xl border border-amber-600/50 bg-amber-950/30 p-4">
+        <div className="rounded-xl border border-amber-600/40 bg-amber-600/10 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-amber-300">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-amber-600 dark:text-amber-400">
                 <Clock className="h-4 w-4" /> Plan ready — your approval needed
               </h2>
-              <p className="mt-1 text-xs text-amber-200/70">
+              <p className="mt-1 text-xs text-amber-700/80 dark:text-amber-300/70">
                 {runAgents.length} agent{runAgents.length === 1 ? "" : "s"} will work in parallel on
                 disjoint files. Review the plan below. <strong>Nothing is changed until you approve.</strong>
               </p>
@@ -190,29 +190,29 @@ export default function RunDetailPage() {
                 | Array<{ file_path: string; action: string; description: string }>
                 | undefined;
               return (
-                <div key={agent.id} className="rounded-lg border border-amber-900/30 bg-zinc-900/50 p-2.5">
-                  <p className="mb-1 text-xs font-semibold text-amber-200">
+                <div key={agent.id} className="rounded-lg border border-amber-600/25 bg-surface p-2.5">
+                  <p className="mb-1 text-xs font-semibold text-amber-600 dark:text-amber-300">
                     {idx + 1}. {agent.name}
                   </p>
                   {steps && steps.length > 0 ? (
                     <ul className="space-y-1.5">
                       {steps.map((s, i) => (
-                        <li key={i} className="text-[11px] leading-relaxed text-zinc-400">
+                        <li key={i} className="text-[11px] leading-relaxed text-muted-foreground">
                           <span className={cn(
                             "mr-1.5 rounded px-1 py-0.5 text-[9px] font-bold uppercase",
-                            s.action === "create" ? "bg-emerald-500/20 text-emerald-300" :
-                            s.action === "delete" ? "bg-red-500/20 text-red-300" :
-                            "bg-blue-500/20 text-blue-300",
+                            s.action === "create" ? "bg-accent/15 text-accent" :
+                            s.action === "delete" ? "bg-destructive/15 text-destructive" :
+                            "bg-blue-600/15 text-blue-600",
                           )}>
                             {s.action}
                           </span>
-                          <span className="font-mono text-zinc-300">{s.file_path}</span>
-                          <span className="text-zinc-500"> — {s.description}</span>
+                          <span className="font-mono text-foreground">{s.file_path}</span>
+                          <span className="text-muted-foreground"> — {s.description}</span>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-[11px] text-zinc-600">Generating plan…</p>
+                    <p className="text-[11px] text-muted-foreground">Generating plan…</p>
                   )}
                 </div>
               );
@@ -222,7 +222,7 @@ export default function RunDetailPage() {
       )}
 
       {/* Pipeline Progress */}
-      <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800">
+      <div className="p-3 rounded-xl bg-surface border border-border">
         <div className="flex items-center gap-0.5">
           {PIPELINE.map((stage, i) => {
             const reached = currentStageIdx >= i && currentStageIdx >= 0;
@@ -233,9 +233,9 @@ export default function RunDetailPage() {
                   className={cn(
                     "flex flex-col items-center gap-1.5 flex-1 rounded-lg py-2.5 px-1 text-center transition-all",
                     isCurrent
-                      ? "bg-blue-950/80 ring-1 ring-blue-500/40"
+                      ? "bg-blue-600/10 ring-1 ring-blue-600/40"
                       : reached
-                      ? "bg-zinc-800/50"
+                      ? "bg-surface-2"
                       : "bg-transparent",
                   )}
                 >
@@ -243,23 +243,23 @@ export default function RunDetailPage() {
                     className={cn(
                       "h-2.5 w-2.5 rounded-full transition-colors",
                       isCurrent
-                        ? "bg-blue-400 shadow-lg shadow-blue-400/40"
+                        ? "bg-blue-600"
                         : reached
-                        ? "bg-emerald-500"
-                        : "bg-zinc-700",
+                        ? "bg-accent"
+                        : "bg-surface-2",
                     )}
                   />
                   <span
                     className={cn(
                       "text-[10px] font-medium",
-                      isCurrent ? "text-blue-300" : reached ? "text-zinc-400" : "text-zinc-600",
+                      isCurrent ? "text-blue-600" : reached ? "text-muted-foreground" : "text-muted-foreground",
                     )}
                   >
                     {stage.label}
                   </span>
                 </div>
                 {i < PIPELINE.length - 1 && (
-                  <div className={cn("h-px w-4 shrink-0", reached ? "bg-emerald-800" : "bg-zinc-800")} />
+                  <div className={cn("h-px w-4 shrink-0", reached ? "bg-accent" : "bg-surface-2")} />
                 )}
               </div>
             );
@@ -271,11 +271,11 @@ export default function RunDetailPage() {
       {runAgents.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
-              <Bot className="h-4 w-4 text-blue-400" />
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Bot className="h-4 w-4 text-blue-600" />
               {awaitingApproval ? `Proposed Plan — ${runAgents.length} agent${runAgents.length === 1 ? "" : "s"}` : `Deployed Agents (${runAgents.length})`}
             </h2>
-            <span className="text-xs text-zinc-500">
+            <span className="text-xs text-muted-foreground">
               {busyAgents} working · {doneAgents} done
             </span>
           </div>
@@ -296,37 +296,37 @@ export default function RunDetailPage() {
       {/* Brain Activity */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
             <Brain className="h-4 w-4 text-amber-400" />
             Orchestrator Brain
           </h2>
           <div className="flex items-center gap-2">
-            <div className={cn("h-2 w-2 rounded-full", connected ? "bg-emerald-400" : "bg-zinc-600")} />
-            <span className="text-[10px] text-zinc-500">{connected ? "Live" : "Disconnected"}</span>
+            <div className={cn("h-2 w-2 rounded-full", connected ? "bg-accent" : "bg-surface-2")} />
+            <span className="text-[10px] text-muted-foreground">{connected ? "Live" : "Disconnected"}</span>
           </div>
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 overflow-hidden">
+        <div className="rounded-xl border border-border bg-surface overflow-hidden">
           <div
             ref={brainRef}
             className="max-h-80 overflow-y-auto p-4 font-mono text-xs space-y-1"
           >
             {brainLogs.length === 0 ? (
-              <p className="text-zinc-700">Waiting for orchestrator activity...</p>
+              <p className="text-muted-foreground">Waiting for orchestrator activity...</p>
             ) : (
               brainLogs.map((log, i) => (
                 <div key={i} className="flex gap-2">
-                  <span className="text-zinc-600 shrink-0">
+                  <span className="text-muted-foreground shrink-0">
                     {new Date(log.created_at).toLocaleTimeString()}
                   </span>
                   <span
                     className={cn(
                       "shrink-0 uppercase font-bold w-14",
-                      brainLogColors[log.log_type] || "text-zinc-500",
+                      brainLogColors[log.log_type] || "text-muted-foreground",
                     )}
                   >
                     [{log.log_type}]
                   </span>
-                  <span className="text-zinc-300 whitespace-pre-wrap break-all">{log.content}</span>
+                  <span className="text-foreground whitespace-pre-wrap break-all">{log.content}</span>
                 </div>
               ))
             )}
@@ -336,7 +336,7 @@ export default function RunDetailPage() {
 
       {/* Error Message */}
       {run.error_message && (
-        <div className="rounded-xl bg-red-950/30 border border-red-900/50 p-4 text-sm text-red-300">
+        <div className="rounded-xl bg-destructive/10 border border-destructive/30 p-4 text-sm text-destructive">
           <p className="font-medium mb-1">Error</p>
           {run.error_message}
         </div>
@@ -345,7 +345,7 @@ export default function RunDetailPage() {
       {/* PR Link */}
       {run.result_pr_url && (
         <a href={run.result_pr_url} target="_blank" rel="noopener noreferrer">
-          <div className="flex items-center justify-center gap-2 p-4 rounded-xl bg-emerald-950/30 border border-emerald-800/50 text-emerald-300 hover:bg-emerald-950/50 transition-colors cursor-pointer">
+          <div className="flex items-center justify-center gap-2 p-4 rounded-xl bg-accent/10 border border-accent/30 text-accent hover:bg-accent/15 transition-colors cursor-pointer">
             <GitPullRequest className="h-5 w-5" />
             <span className="font-medium">View Integrated Pull Request</span>
             <ExternalLink className="h-4 w-4" />

@@ -21,14 +21,14 @@ export function StatsOverview({ totalProjects, activeAgents = 0, pullRequests = 
         <div
           key={stat.label}
           style={{ animationDelay: `${i * 80}ms` }}
-          className="hover-lift animate-fade-up flex items-center gap-4 rounded-xl border border-zinc-800 bg-[#12121c] p-5"
+          className="hover-lift animate-fade-up flex items-center gap-4 rounded-xl border border-border bg-surface p-5"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-950/40 text-indigo-300">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-accent/30 bg-accent/10 text-accent">
             <stat.icon className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-white">{stat.value}</p>
-            <p className="text-sm text-zinc-400">{stat.label}</p>
+            <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+            <p className="text-sm text-muted-foreground">{stat.label}</p>
           </div>
         </div>
       ))}

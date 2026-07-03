@@ -19,15 +19,15 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
 
   if (!memory) {
     return (
-      <Card className="border-zinc-800 bg-zinc-950">
+      <Card className="border-border bg-background">
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
-            <Brain className="h-4 w-4 text-indigo-300 animate-pulse" />
+            <Brain className="h-4 w-4 text-accent animate-pulse" />
             AI Memory
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-zinc-500">Loading memory...</p>
+          <p className="text-sm text-muted-foreground">Loading memory...</p>
         </CardContent>
       </Card>
     );
@@ -41,21 +41,21 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
   };
 
   return (
-    <Card className="border-zinc-800 bg-zinc-950">
+    <Card className="border-border bg-background">
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <Brain className="h-4 w-4 text-indigo-300" />
+            <Brain className="h-4 w-4 text-accent" />
             AI Memory
           </span>
           <div className="flex gap-2">
-            <Badge variant="default" className="border-indigo-500/40 text-indigo-300 text-xs">
+            <Badge variant="default" className="border-accent/40 text-accent text-xs">
               {memory.total_lessons} lessons
             </Badge>
-            <Badge variant="default" className="border-zinc-700 text-zinc-400 text-xs">
+            <Badge variant="default" className="border-border text-muted-foreground text-xs">
               {memory.total_edits} edits
             </Badge>
-            <Badge variant="default" className="border-zinc-700 text-zinc-400 text-xs">
+            <Badge variant="default" className="border-border text-muted-foreground text-xs">
               {memory.total_fixes} fixes
             </Badge>
           </div>
@@ -63,7 +63,7 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
       </CardHeader>
       <CardContent className="space-y-2 pt-0">
         {!hasContent ? (
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-muted-foreground">
             No memory yet. Run agents on this project and they will learn from their mistakes.
           </p>
         ) : (
@@ -72,7 +72,7 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
             {memory.lessons.length > 0 && (
               <SectionToggle
                 title="Lessons Learned"
-                icon={<Lightbulb className="h-3.5 w-3.5 text-amber-400" />}
+                icon={<Lightbulb className="h-3.5 w-3.5 text-amber-600" />}
                 count={memory.lessons.length}
                 isOpen={expandedSection === "lessons"}
                 onToggle={() => toggle("lessons")}
@@ -89,19 +89,19 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
             {memory.recent_errors.length > 0 && (
               <SectionToggle
                 title="Recent Errors"
-                icon={<AlertTriangle className="h-3.5 w-3.5 text-red-400" />}
+                icon={<AlertTriangle className="h-3.5 w-3.5 text-destructive" />}
                 count={memory.recent_errors.length}
                 isOpen={expandedSection === "errors"}
                 onToggle={() => toggle("errors")}
               >
                 <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                   {memory.recent_errors.map((err, i) => (
-                    <div key={i} className="rounded border border-red-900/30 bg-red-950/20 p-2">
-                      <div className="flex items-center gap-2 text-xs text-zinc-400 mb-1">
-                        <span className="text-red-400 font-medium">{err.agent}</span>
+                    <div key={i} className="rounded border border-destructive/20 bg-destructive/10 p-2">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                        <span className="text-destructive font-medium">{err.agent}</span>
                         <span>{err.command}</span>
                       </div>
-                      <p className="text-xs text-zinc-500 font-mono line-clamp-2">{err.error}</p>
+                      <p className="text-xs text-muted-foreground font-mono line-clamp-2">{err.error}</p>
                     </div>
                   ))}
                 </div>
@@ -112,19 +112,19 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
             {memory.recent_fixes.length > 0 && (
               <SectionToggle
                 title="Recent Fixes"
-                icon={<Wrench className="h-3.5 w-3.5 text-green-400" />}
+                icon={<Wrench className="h-3.5 w-3.5 text-accent" />}
                 count={memory.recent_fixes.length}
                 isOpen={expandedSection === "fixes"}
                 onToggle={() => toggle("fixes")}
               >
                 <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                   {memory.recent_fixes.map((fix, i) => (
-                    <div key={i} className="rounded border border-green-900/30 bg-green-950/20 p-2">
+                    <div key={i} className="rounded border border-accent/20 bg-accent/10 p-2">
                       <div className="flex items-center gap-2 text-xs">
-                        <span className="text-green-400 font-medium">{fix.agent}</span>
-                        <span className="text-zinc-500">{fix.file}</span>
+                        <span className="text-accent font-medium">{fix.agent}</span>
+                        <span className="text-muted-foreground">{fix.file}</span>
                       </div>
-                      <p className="text-xs text-zinc-400 mt-0.5">{fix.description}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{fix.description}</p>
                     </div>
                   ))}
                 </div>
@@ -135,7 +135,7 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
             {memory.recent_snapshots.length > 0 && (
               <SectionToggle
                 title="Change History"
-                icon={<History className="h-3.5 w-3.5 text-blue-400" />}
+                icon={<History className="h-3.5 w-3.5 text-blue-600" />}
                 count={memory.recent_snapshots.length}
                 isOpen={expandedSection === "snapshots"}
                 onToggle={() => toggle("snapshots")}
@@ -152,7 +152,7 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
             {globalStats && globalStats.total_learnings > 0 && (
               <SectionToggle
                 title="Global Knowledge"
-                icon={<Globe className="h-3.5 w-3.5 text-purple-400" />}
+                icon={<Globe className="h-3.5 w-3.5 text-purple-600" />}
                 count={globalStats.total_learnings}
                 isOpen={expandedSection === "global"}
                 onToggle={() => toggle("global")}
@@ -161,15 +161,15 @@ export function MemoryPanel({ projectId }: MemoryPanelProps) {
                   {globalStats.learnings.slice(-10).map((g, i) => (
                     <div key={i} className="rounded border border-purple-900/30 bg-purple-950/20 p-2">
                       <div className="flex items-center gap-2 mb-1">
-                        <Badge variant="default" className="border-purple-800 text-purple-300 text-[10px] px-1.5 py-0">
+                        <Badge variant="default" className="border-purple-600/40 text-purple-600 text-[10px] px-1.5 py-0">
                           {g.category}
                         </Badge>
                         {g.hit_count > 1 && (
-                          <span className="text-[10px] text-zinc-500">seen {g.hit_count}x</span>
+                          <span className="text-[10px] text-muted-foreground">seen {g.hit_count}x</span>
                         )}
                       </div>
-                      <p className="text-xs text-zinc-300">{g.pattern}</p>
-                      <p className="text-xs text-zinc-500 mt-0.5">{g.solution}</p>
+                      <p className="text-xs text-foreground">{g.pattern}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{g.solution}</p>
                     </div>
                   ))}
                 </div>
@@ -194,20 +194,20 @@ function SectionToggle({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border border-zinc-800 rounded-lg overflow-hidden">
+    <div className="border border-border rounded-lg overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-900/50 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2 hover:bg-surface-2 transition-colors"
       >
-        <span className="flex items-center gap-2 text-sm text-zinc-300">
+        <span className="flex items-center gap-2 text-sm text-foreground">
           {icon}
           {title}
-          <span className="text-zinc-600">({count})</span>
+          <span className="text-muted-foreground">({count})</span>
         </span>
         {isOpen ? (
-          <ChevronUp className="h-3.5 w-3.5 text-zinc-600" />
+          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
         ) : (
-          <ChevronDown className="h-3.5 w-3.5 text-zinc-600" />
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
         )}
       </button>
       {isOpen && <div className="px-3 pb-3">{children}</div>}
@@ -232,29 +232,29 @@ function LessonCard({ lesson }: { lesson: Lesson }) {
           ))}
         </div>
         {lesson.times_matched > 0 && (
-          <span className="text-[10px] text-zinc-500">
+          <span className="text-[10px] text-muted-foreground">
             matched {lesson.times_matched}x
           </span>
         )}
       </div>
       <div className="space-y-1">
         <div className="flex gap-1.5">
-          <span className="text-[10px] text-red-400 font-medium shrink-0 mt-0.5">ERROR</span>
-          <p className="text-xs text-zinc-300">{lesson.error_pattern}</p>
+          <span className="text-[10px] text-destructive font-medium shrink-0 mt-0.5">ERROR</span>
+          <p className="text-xs text-foreground">{lesson.error_pattern}</p>
         </div>
         <div className="flex gap-1.5">
-          <span className="text-[10px] text-amber-400 font-medium shrink-0 mt-0.5">CAUSE</span>
-          <p className="text-xs text-zinc-400">{lesson.root_cause}</p>
+          <span className="text-[10px] text-amber-600 font-medium shrink-0 mt-0.5">CAUSE</span>
+          <p className="text-xs text-muted-foreground">{lesson.root_cause}</p>
         </div>
         <div className="flex gap-1.5">
-          <span className="text-[10px] text-green-400 font-medium shrink-0 mt-0.5">FIX</span>
-          <p className="text-xs text-zinc-400">{lesson.fix_approach}</p>
+          <span className="text-[10px] text-accent font-medium shrink-0 mt-0.5">FIX</span>
+          <p className="text-xs text-muted-foreground">{lesson.fix_approach}</p>
         </div>
       </div>
       {lesson.files.length > 0 && (
         <div className="mt-1.5 flex flex-wrap gap-1">
           {lesson.files.slice(0, 5).map((f) => (
-            <span key={f} className="text-[10px] text-zinc-600 bg-zinc-900 rounded px-1.5 py-0.5 font-mono">
+            <span key={f} className="text-[10px] text-muted-foreground bg-surface rounded px-1.5 py-0.5 font-mono">
               {f}
             </span>
           ))}
@@ -269,18 +269,18 @@ function SnapshotCard({ snapshot }: { snapshot: Snapshot }) {
   return (
     <div className="rounded border border-blue-900/30 bg-blue-950/20 p-2">
       <div className="flex items-center gap-2 text-xs mb-1">
-        <span className="text-blue-400 font-medium">{snapshot.agent}</span>
-        <span className="text-zinc-500">{snapshot.files.length} file(s)</span>
+        <span className="text-blue-600 font-medium">{snapshot.agent}</span>
+        <span className="text-muted-foreground">{snapshot.files.length} file(s)</span>
       </div>
-      <p className="text-xs text-zinc-400">{snapshot.summary}</p>
+      <p className="text-xs text-muted-foreground">{snapshot.summary}</p>
       <div className="mt-1 flex flex-wrap gap-1">
         {snapshot.files.slice(0, 5).map((f, i) => (
-          <span key={i} className="text-[10px] text-zinc-600 bg-zinc-900 rounded px-1.5 py-0.5 font-mono">
+          <span key={i} className="text-[10px] text-muted-foreground bg-surface rounded px-1.5 py-0.5 font-mono">
             {f.file}
           </span>
         ))}
         {snapshot.files.length > 5 && (
-          <span className="text-[10px] text-zinc-600">+{snapshot.files.length - 5} more</span>
+          <span className="text-[10px] text-muted-foreground">+{snapshot.files.length - 5} more</span>
         )}
       </div>
     </div>

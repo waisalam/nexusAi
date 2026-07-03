@@ -19,14 +19,14 @@ export function Topbar() {
   const initial = (user?.full_name || user?.username || user?.email || "U").charAt(0).toUpperCase();
 
   return (
-    <header className="glass fixed left-64 right-0 top-0 z-30 flex h-16 items-center justify-between border-b border-zinc-900 px-6">
-      <div className="text-sm text-zinc-500">
+    <header className="glass fixed left-64 right-0 top-0 z-30 flex h-16 items-center justify-between border-b border-border px-6">
+      <div className="text-sm text-muted-foreground">
         {user?.full_name || user?.username ? (
           <span>
-            Signed in as <span className="text-zinc-300">{user.full_name || user.username}</span>
+            Signed in as <span className="text-foreground">{user.full_name || user.username}</span>
           </span>
         ) : (
-          <span className="text-zinc-600">Nexus AI workspace</span>
+          <span className="text-muted-foreground">Nexus AI workspace</span>
         )}
       </div>
 
@@ -38,8 +38,8 @@ export function Topbar() {
             className={cn(
               "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
               user.demo_runs_remaining > 0
-                ? "border-zinc-700 text-zinc-300 hover:border-zinc-500"
-                : "border-red-800 bg-red-950/40 text-red-300 hover:bg-red-950/70"
+                ? "border-border text-foreground hover:border-muted-foreground"
+                : "border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/15"
             )}
           >
             {user.demo_runs_remaining > 0
@@ -56,7 +56,7 @@ export function Topbar() {
         <Button variant="ghost" size="icon" title="Log out" onClick={handleLogout}>
           <LogOut className="h-4 w-4" />
         </Button>
-        <div className="ml-1 flex h-8 w-8 items-center justify-center rounded-full border border-indigo-500/40 bg-indigo-950/60 text-sm font-semibold text-indigo-300">
+        <div className="ml-1 flex h-8 w-8 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-sm font-semibold text-accent">
           {initial}
         </div>
       </div>

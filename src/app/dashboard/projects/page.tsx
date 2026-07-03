@@ -17,7 +17,7 @@ import { projectCreateSchema, type ProjectCreateFormData } from "@/lib/validatio
 
 export default function ProjectsPage() {
   return (
-    <Suspense fallback={<div className="text-zinc-400">Loading...</div>}>
+    <Suspense fallback={<div className="text-muted-foreground">Loading...</div>}>
       <ProjectsContent />
     </Suspense>
   );
@@ -56,7 +56,7 @@ function ProjectsContent() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Projects</h1>
-          <p className="mt-1 text-zinc-400">Connect a GitHub repo to give your AI team a place to work</p>
+          <p className="mt-1 text-muted-foreground">Connect a GitHub repo to give your AI team a place to work</p>
         </div>
         <Button variant="primary" onClick={() => setShowForm((s) => !s)}>
           {showForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -65,29 +65,29 @@ function ProjectsContent() {
       </div>
 
       {showForm && (
-        <Card className="animate-scale-in border-indigo-500/25">
+        <Card className="animate-scale-in border-accent/25">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <GithubIcon className="h-5 w-5 text-indigo-400" /> Connect a GitHub Repository
+              <GithubIcon className="h-5 w-5 text-accent" /> Connect a GitHub Repository
             </CardTitle>
             <CardDescription>We clone & analyze it once, then your agents work from that memory.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-300">GitHub Repository URL</label>
+                <label className="text-sm font-medium text-foreground">GitHub Repository URL</label>
                 <Input placeholder="https://github.com/owner/repo" {...register("github_repo_url")} />
                 {errors.github_repo_url && (
-                  <p className="text-xs text-red-400">{errors.github_repo_url.message}</p>
+                  <p className="text-xs text-destructive">{errors.github_repo_url.message}</p>
                 )}
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-zinc-300">Project Name (optional)</label>
+                  <label className="text-sm font-medium text-foreground">Project Name (optional)</label>
                   <Input placeholder="My Project" {...register("name")} />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-zinc-300">Description (optional)</label>
+                  <label className="text-sm font-medium text-foreground">Description (optional)</label>
                   <Input placeholder="A brief description" {...register("description")} />
                 </div>
               </div>
@@ -118,12 +118,12 @@ function ProjectsContent() {
         </div>
       ) : (
         !showForm && (
-          <div className="animate-fade-up grid-bg flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800 p-16 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/60 text-zinc-500">
+          <div className="animate-fade-up grid-bg flex flex-col items-center justify-center rounded-2xl border border-dashed border-border p-16 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-surface text-muted-foreground">
               <FolderGit2 className="h-6 w-6" />
             </div>
             <h3 className="mt-5 text-lg font-semibold">No projects yet</h3>
-            <p className="mt-1 max-w-sm text-sm text-zinc-500">
+            <p className="mt-1 max-w-sm text-sm text-muted-foreground">
               Connect your first GitHub repository to start deploying autonomous AI agents on your codebase.
             </p>
             <Button variant="primary" className="mt-6" onClick={() => setShowForm(true)}>

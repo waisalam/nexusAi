@@ -19,12 +19,12 @@ const STAGES = [
 const STAGE_ORDER = ["pending", "agents_working", "integrating", "building", "fixing", "completed"];
 
 const logColors: Record<string, string> = {
-  plan: "text-yellow-400",
-  code: "text-blue-400",
-  build: "text-purple-400",
-  lock: "text-orange-400",
-  error: "text-red-400",
-  status: "text-green-400",
+  plan: "text-yellow-600",
+  code: "text-blue-600",
+  build: "text-purple-600",
+  lock: "text-orange-600",
+  error: "text-destructive",
+  status: "text-accent",
 };
 
 interface OrchestratorPanelProps {
@@ -45,20 +45,20 @@ export function OrchestratorPanel({ run, onStop }: OrchestratorPanelProps) {
   const isFailed = run.status === "failed";
 
   return (
-    <Card className="border-blue-900/50">
+    <Card className="border-blue-600/30">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
-            <Brain className="h-4 w-4 text-blue-400" />
+            <Brain className="h-4 w-4 text-blue-600" />
             Orchestrator — One Brain Watching All Agents
           </CardTitle>
           <div className="flex items-center gap-2">
             {isFailed ? (
-              <span className="flex items-center gap-1 text-xs text-red-400"><XCircle className="h-3.5 w-3.5" /> Failed</span>
+              <span className="flex items-center gap-1 text-xs text-destructive"><XCircle className="h-3.5 w-3.5" /> Failed</span>
             ) : run.status === "completed" ? (
-              <span className="flex items-center gap-1 text-xs text-green-400"><CheckCircle className="h-3.5 w-3.5" /> Completed</span>
+              <span className="flex items-center gap-1 text-xs text-accent"><CheckCircle className="h-3.5 w-3.5" /> Completed</span>
             ) : (
-              <span className="flex items-center gap-1 text-xs text-blue-400"><Loader2 className="h-3.5 w-3.5 animate-spin" /> {run.status}</span>
+              <span className="flex items-center gap-1 text-xs text-blue-600"><Loader2 className="h-3.5 w-3.5 animate-spin" /> {run.status}</span>
             )}
             {isActive && (
               <Button variant="destructive" size="sm" onClick={() => onStop(run.id)}>
@@ -79,10 +79,10 @@ export function OrchestratorPanel({ run, onStop }: OrchestratorPanelProps) {
               <div key={stage.key} className="flex items-center gap-1 flex-1">
                 <div className={cn(
                   "flex flex-col items-center gap-1 flex-1 rounded-lg p-2 text-center transition-colors",
-                  isCurrent ? "bg-blue-950 border border-blue-700" : reached ? "bg-gray-800" : "bg-gray-900/50"
+                  isCurrent ? "bg-blue-600/10 border border-blue-600/40" : reached ? "bg-surface-2" : "bg-surface"
                 )}>
-                  <stage.icon className={cn("h-4 w-4", isCurrent ? "text-blue-400" : reached ? "text-green-400" : "text-gray-600")} />
-                  <span className={cn("text-[10px] leading-tight", isCurrent ? "text-blue-300" : reached ? "text-gray-300" : "text-gray-600")}>
+                  <stage.icon className={cn("h-4 w-4", isCurrent ? "text-blue-600" : reached ? "text-accent" : "text-muted-foreground")} />
+                  <span className={cn("text-[10px] leading-tight", isCurrent ? "text-blue-600" : reached ? "text-foreground" : "text-muted-foreground")}>
                     {stage.label}
                   </span>
                 </div>
@@ -100,26 +100,26 @@ export function OrchestratorPanel({ run, onStop }: OrchestratorPanelProps) {
           </a>
         )}
         {run.error_message && (
-          <div className="rounded-md bg-red-950/50 border border-red-900 p-2 text-xs text-red-300">
+          <div className="rounded-md bg-destructive/10 border border-destructive/30 p-2 text-xs text-destructive">
             {run.error_message}
           </div>
         )}
 
         {/* Live brain logs */}
-        <div className="rounded-lg border border-gray-800 bg-gray-950">
-          <div className="flex items-center gap-2 px-3 py-1.5 border-b border-gray-800">
-            <div className={cn("h-2 w-2 rounded-full", connected ? "bg-green-400" : "bg-gray-600")} />
-            <span className="text-xs text-gray-500">Orchestrator activity</span>
+        <div className="rounded-lg border border-border bg-background">
+          <div className="flex items-center gap-2 px-3 py-1.5 border-b border-border">
+            <div className={cn("h-2 w-2 rounded-full", connected ? "bg-accent" : "bg-muted-foreground")} />
+            <span className="text-xs text-muted-foreground">Orchestrator activity</span>
           </div>
           <div className="max-h-64 overflow-y-auto p-3 font-mono text-xs space-y-1">
             {logs.length === 0 ? (
-              <p className="text-gray-600">Waiting for orchestrator...</p>
+              <p className="text-muted-foreground">Waiting for orchestrator...</p>
             ) : (
               logs.map((log, i) => (
                 <div key={i} className="flex gap-2">
-                  <span className="text-gray-600 shrink-0">{new Date(log.created_at).toLocaleTimeString()}</span>
-                  <span className={cn("shrink-0 uppercase font-bold w-14", logColors[log.log_type] || "text-gray-400")}>[{log.log_type}]</span>
-                  <span className="text-gray-300 whitespace-pre-wrap break-all">{log.content}</span>
+                  <span className="text-muted-foreground shrink-0">{new Date(log.created_at).toLocaleTimeString()}</span>
+                  <span className={cn("shrink-0 uppercase font-bold w-14", logColors[log.log_type] || "text-muted-foreground")}>[{log.log_type}]</span>
+                  <span className="text-foreground whitespace-pre-wrap break-all">{log.content}</span>
                 </div>
               ))
             )}

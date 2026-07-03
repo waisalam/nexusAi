@@ -6,7 +6,7 @@ import { setStoredTokens } from "@/lib/api-client";
 
 export default function AuthCallbackPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><p className="text-gray-400">Loading...</p></div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><p className="text-muted-foreground">Loading...</p></div>}>
       <AuthCallbackContent />
     </Suspense>
   );
@@ -30,7 +30,7 @@ function AuthCallbackContent() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-gray-400">Authenticating...</p>
+      <p className="text-muted-foreground">Authenticating...</p>
     </div>
   );
 }

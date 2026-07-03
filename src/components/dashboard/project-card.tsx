@@ -32,13 +32,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Link href={`/dashboard/projects/${project.id}`}>
-      <div className="hover-lift group relative h-full rounded-xl border border-zinc-800 bg-[#12121c] p-5">
+      <div className="hover-lift group relative h-full rounded-xl border border-border bg-surface p-5">
         <div className="flex items-start justify-between">
           <div className="min-w-0">
-            <h3 className="truncate text-base font-semibold text-white group-hover:text-indigo-100">
+            <h3 className="truncate text-base font-semibold text-foreground group-hover:text-accent">
               {project.name}
             </h3>
-            <p className="mt-0.5 truncate text-sm text-zinc-500">
+            <p className="mt-0.5 truncate text-sm text-muted-foreground">
               {project.github_repo_owner}/{project.github_repo_name}
             </p>
           </div>
@@ -47,7 +47,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-zinc-600 hover:text-red-400"
+              className="h-7 w-7 text-muted-foreground hover:text-destructive"
               title="Delete project"
               onClick={onDelete}
               disabled={deleteProject.isPending}
@@ -58,7 +58,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         <div className="mt-5 flex items-center justify-between">
-          <div className="flex items-center gap-4 text-xs text-zinc-500">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <GitBranch className="h-3.5 w-3.5" />
               {project.default_branch}
@@ -67,14 +67,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
               href={project.github_repo_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-zinc-200"
+              className="flex items-center gap-1.5 hover:text-foreground"
               onClick={(e) => e.stopPropagation()}
             >
               <ExternalLink className="h-3.5 w-3.5" />
               GitHub
             </a>
           </div>
-          <span className="flex items-center gap-1 text-xs font-medium text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+          <span className="flex items-center gap-1 text-xs font-medium text-accent opacity-0 transition-opacity group-hover:opacity-100">
             Open <ArrowRight className="h-3.5 w-3.5" />
           </span>
         </div>

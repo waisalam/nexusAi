@@ -12,14 +12,14 @@ interface AgentCardProps {
 }
 
 const statusIcons: Record<string, React.ReactNode> = {
-  idle: <Pause className="h-4 w-4 text-zinc-400" />,
-  planning: <Loader2 className="h-4 w-4 text-amber-400 animate-spin" />,
-  coding: <Loader2 className="h-4 w-4 text-indigo-300 animate-spin" />,
-  building: <Loader2 className="h-4 w-4 text-purple-400 animate-spin" />,
-  testing: <Loader2 className="h-4 w-4 text-cyan-400 animate-spin" />,
-  pushing: <Loader2 className="h-4 w-4 text-green-400 animate-spin" />,
-  completed: <CheckCircle className="h-4 w-4 text-green-400" />,
-  error: <AlertCircle className="h-4 w-4 text-red-400" />,
+  idle: <Pause className="h-4 w-4 text-muted-foreground" />,
+  planning: <Loader2 className="h-4 w-4 text-amber-600 animate-spin" />,
+  coding: <Loader2 className="h-4 w-4 text-accent animate-spin" />,
+  building: <Loader2 className="h-4 w-4 text-purple-600 animate-spin" />,
+  testing: <Loader2 className="h-4 w-4 text-cyan-600 animate-spin" />,
+  pushing: <Loader2 className="h-4 w-4 text-accent animate-spin" />,
+  completed: <CheckCircle className="h-4 w-4 text-accent" />,
+  error: <AlertCircle className="h-4 w-4 text-destructive" />,
 };
 
 const statusColors: Record<string, "default" | "active" | "paused" | "archived"> = {
@@ -38,12 +38,12 @@ export function AgentCard({ agent, selected, onClick }: AgentCardProps) {
 
   return (
     <Card
-      className={`cursor-pointer transition-all ${selected ? "border-indigo-500/60 bg-indigo-950/20" : "hover:border-zinc-700"}`}
+      className={`cursor-pointer transition-all ${selected ? "border-accent/60 bg-accent/10" : "hover:border-muted-foreground"}`}
       onClick={onClick}
     >
       <CardContent className="flex items-center gap-4 p-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900">
-          <Bot className="h-5 w-5 text-indigo-300" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-surface">
+          <Bot className="h-5 w-5 text-accent" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
@@ -55,7 +55,7 @@ export function AgentCard({ agent, selected, onClick }: AgentCardProps) {
               </span>
             </Badge>
           </div>
-          <div className="mt-1 flex items-center gap-3 text-xs text-zinc-500">
+          <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
             {agent.work_branch && <span className="truncate">branch: {agent.work_branch}</span>}
             {tokens > 0 && <span>{tokens.toLocaleString()} tokens</span>}
           </div>

@@ -49,12 +49,12 @@ export default function AdminPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-10 text-zinc-500">Loading…</div>;
+  if (loading) return <div className="p-10 text-muted-foreground">Loading…</div>;
   if (error)
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-3 text-zinc-400">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3 text-muted-foreground">
         <p>{error}</p>
-        <Link href="/dashboard" className="text-indigo-400 hover:underline">Back to dashboard</Link>
+        <Link href="/dashboard" className="text-accent hover:underline">Back to dashboard</Link>
       </div>
     );
 
@@ -64,7 +64,7 @@ export default function AdminPage() {
 
   return (
     <div className="mx-auto max-w-5xl p-8">
-      <h1 className="mb-6 text-2xl font-semibold text-white">Admin</h1>
+      <h1 className="mb-6 text-2xl font-semibold text-foreground">Admin</h1>
 
       <div className="mb-6 grid grid-cols-3 gap-4">
         {[
@@ -72,9 +72,9 @@ export default function AdminPage() {
           { label: "Feedback", value: stats?.feedback ?? 0 },
           { label: "Contact requests", value: stats?.contact_requests ?? 0 },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl border border-zinc-800 bg-[#12121c] p-5">
-            <div className="text-2xl font-semibold text-white">{s.value}</div>
-            <div className="text-xs text-zinc-500">{s.label}</div>
+          <div key={s.label} className="rounded-xl border border-border bg-surface p-5">
+            <div className="text-2xl font-semibold text-foreground">{s.value}</div>
+            <div className="text-xs text-muted-foreground">{s.label}</div>
           </div>
         ))}
       </div>
@@ -85,7 +85,7 @@ export default function AdminPage() {
             key={t}
             onClick={() => setTab(t)}
             className={`rounded-lg px-3 py-1.5 text-sm capitalize transition-colors ${
-              tab === t ? "bg-indigo-600 text-white" : "text-zinc-400 hover:bg-zinc-800/70 hover:text-white"
+              tab === t ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-surface-2 hover:text-foreground"
             }`}
           >
             {t}
@@ -96,24 +96,24 @@ export default function AdminPage() {
       <div className="space-y-2">
         {tab === "users"
           ? users.map((u) => (
-              <div key={u.id} className="rounded-lg border border-zinc-800 bg-[#12121c] p-4 text-sm">
+              <div key={u.id} className="rounded-lg border border-border bg-surface p-4 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-white">{u.username} <span className="text-zinc-500">· {u.email}</span></span>
-                  <span className="text-xs text-zinc-500">{u.demo_runs_remaining} runs left · {new Date(u.created_at).toLocaleDateString()}</span>
+                  <span className="text-foreground">{u.username} <span className="text-muted-foreground">· {u.email}</span></span>
+                  <span className="text-xs text-muted-foreground">{u.demo_runs_remaining} runs left · {new Date(u.created_at).toLocaleDateString()}</span>
                 </div>
               </div>
             ))
           : list.map((r) => (
-              <div key={r.id} className="rounded-lg border border-zinc-800 bg-[#12121c] p-4 text-sm">
-                <p className="text-zinc-100">{r.message}</p>
-                <div className="mt-2 text-xs text-zinc-500">
+              <div key={r.id} className="rounded-lg border border-border bg-surface p-4 text-sm">
+                <p className="text-foreground">{r.message}</p>
+                <div className="mt-2 text-xs text-muted-foreground">
                   {r.name ? `${r.name} · ` : ""}{r.email || "anonymous"}
                   {r.page ? ` · ${r.page}` : ""} · {new Date(r.created_at).toLocaleString()}
                 </div>
               </div>
             ))}
         {(tab === "users" ? users : list).length === 0 && (
-          <p className="text-sm text-zinc-500">Nothing here yet.</p>
+          <p className="text-sm text-muted-foreground">Nothing here yet.</p>
         )}
       </div>
     </div>

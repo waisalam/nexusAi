@@ -154,16 +154,16 @@ export default function ProjectDetailPage() {
   const visibleAgents = (agents || []).filter(a => a.name !== "Fixer (Orchestrator)");
 
   const renderTaskRow = (task: typeof allTasks[number], isChild = false) => (
-    <div key={task.id} className={cn("flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/30 p-3 transition-colors hover:border-zinc-700", isChild && "ml-4 border-l-2 border-l-indigo-500/60")}>
+    <div key={task.id} className={cn("flex items-center justify-between rounded-lg border border-border bg-surface p-3 transition-colors hover:border-muted-foreground", isChild && "ml-4 border-l-2 border-l-accent/60")}>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium">{isChild && "↳ "}{task.title}</p>
         <div className="mt-1 flex items-center gap-2">
           <Badge variant={task.status === "completed" ? "active" : task.status === "failed" ? "archived" : task.status === "in_progress" ? "paused" : "default"}>
             {task.status}
           </Badge>
-          <span className="text-xs text-zinc-500">{task.task_type}</span>
+          <span className="text-xs text-muted-foreground">{task.task_type}</span>
         </div>
-        {task.error_message && <p className="mt-1 truncate text-xs text-red-400">{task.error_message}</p>}
+        {task.error_message && <p className="mt-1 truncate text-xs text-destructive">{task.error_message}</p>}
       </div>
       <div className="ml-2 flex shrink-0 items-center gap-1">
         {(task.status === "pending" || task.status === "failed") && !isChild && (
@@ -186,7 +186,7 @@ export default function ProjectDetailPage() {
     </div>
   );
 
-  if (!project) return <div className="text-zinc-400">Loading project...</div>;
+  if (!project) return <div className="text-muted-foreground">Loading project...</div>;
 
   const hasPendingWork = allTasks.some(t => (t.status === "pending" || t.status === "failed") && !t.parent_task_id);
 
@@ -195,20 +195,20 @@ export default function ProjectDetailPage() {
       {/* Project Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <button onClick={() => router.push("/dashboard/projects")} className="mb-1.5 flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300">
+          <button onClick={() => router.push("/dashboard/projects")} className="mb-1.5 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
             ← Projects
           </button>
           <h1 className="text-2xl font-bold tracking-tight">{project.name}</h1>
-          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-zinc-400">
+          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <GitBranch className="h-3.5 w-3.5" />
               {project.github_repo_owner}/{project.github_repo_name}
             </span>
-            <a href={project.github_repo_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white">
+            <a href={project.github_repo_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground">
               <ExternalLink className="h-3.5 w-3.5" /> GitHub
             </a>
             {project.last_synced_sha && (
-              <span className="rounded border border-zinc-800 bg-zinc-900/60 px-1.5 py-0.5 font-mono text-xs text-zinc-500" title={`Last synced SHA: ${project.last_synced_sha}`}>
+              <span className="rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-xs text-muted-foreground" title={`Last synced SHA: ${project.last_synced_sha}`}>
                 {project.last_synced_sha.slice(0, 7)}
               </span>
             )}
@@ -240,16 +240,16 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* How-to hint */}
-      <div className="flex items-start gap-2 rounded-lg border border-zinc-800/80 bg-zinc-900/40 px-4 py-3 text-xs text-zinc-400">
-        <Rocket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-400" />
+      <div className="flex items-start gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-xs text-muted-foreground">
+        <Rocket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
         <p>
-          <strong className="text-zinc-200">Deploy Team</strong> breaks your task into subtasks and spawns up to 8 agents that work in parallel on disjoint files, then integrates &amp; build-verifies everything into <strong className="text-zinc-200">one pull request</strong>. The Play (▶) on a task runs a single agent — handy for retrying one subtask.
+          <strong className="text-foreground">Deploy Team</strong> breaks your task into subtasks and spawns up to 8 agents that work in parallel on disjoint files, then integrates &amp; build-verifies everything into <strong className="text-foreground">one pull request</strong>. The Play (▶) on a task runs a single agent — handy for retrying one subtask.
         </p>
       </div>
 
       {/* Task Creation Form */}
       {showTaskForm && (
-        <Card className="animate-scale-in border-indigo-500/25">
+        <Card className="animate-scale-in border-accent/25">
           <CardHeader>
             <CardTitle>Create Task</CardTitle>
             <CardDescription>Describe what you want your AI team to build — plain English is fine.</CardDescription>
@@ -257,18 +257,18 @@ export default function ProjectDetailPage() {
           <CardContent>
             <form onSubmit={handleSubmit(onCreateTask)} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-300">Title</label>
+                <label className="text-sm font-medium text-foreground">Title</label>
                 <Input placeholder="e.g. Redesign the landing page with a dark theme" {...register("title")} />
-                {errors.title && <p className="text-xs text-red-400">{errors.title.message}</p>}
+                {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-300">Description</label>
+                <label className="text-sm font-medium text-foreground">Description</label>
                 <textarea
-                  className="flex min-h-25 w-full rounded-lg border border-zinc-700 bg-zinc-900/60 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus-visible:border-indigo-500/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/20"
+                  className="flex min-h-25 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-accent/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20"
                   placeholder="Describe the task in detail..."
                   {...register("description")}
                 />
-                {errors.description && <p className="text-xs text-red-400">{errors.description.message}</p>}
+                {errors.description && <p className="text-xs text-destructive">{errors.description.message}</p>}
               </div>
               <div className="flex gap-3">
                 <Button type="submit" variant="primary" disabled={isSubmitting}>
@@ -291,7 +291,7 @@ export default function ProjectDetailPage() {
           <CardContent>
             <div className="flex items-end gap-3">
               <div className="flex-1 space-y-2">
-                <label className="text-sm font-medium text-zinc-300">Agent name</label>
+                <label className="text-sm font-medium text-foreground">Agent name</label>
                 <Input
                   value={agentName}
                   onChange={(e) => setAgentName(e.target.value)}
@@ -334,7 +334,7 @@ export default function ProjectDetailPage() {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <ListTodo className="h-4 w-4 text-indigo-400" /> Tasks ({tasksData?.total || 0})
+                <ListTodo className="h-4 w-4 text-accent" /> Tasks ({tasksData?.total || 0})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -346,8 +346,8 @@ export default function ProjectDetailPage() {
                   </div>
                 ))
               ) : (
-                <div className="rounded-lg border border-dashed border-zinc-800 py-8 text-center">
-                  <p className="text-sm text-zinc-500">No tasks yet.</p>
+                <div className="rounded-lg border border-dashed border-border py-8 text-center">
+                  <p className="text-sm text-muted-foreground">No tasks yet.</p>
                   <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowTaskForm(true)}>
                     <Plus className="h-3.5 w-3.5" /> New Task
                   </Button>
@@ -361,7 +361,7 @@ export default function ProjectDetailPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Bot className="h-4 w-4 text-indigo-400" /> Agents ({visibleAgents.length})
+                  <Bot className="h-4 w-4 text-accent" /> Agents ({visibleAgents.length})
                 </CardTitle>
                 <Button variant="ghost" size="sm" onClick={openAgentForm} title="Spawn an agent (optional)">
                   <Plus className="h-3.5 w-3.5" />
@@ -387,7 +387,7 @@ export default function ProjectDetailPage() {
                   </div>
                 ))
               ) : (
-                <p className="py-2 text-sm text-zinc-500">No agents yet — Deploy Team creates them automatically.</p>
+                <p className="py-2 text-sm text-muted-foreground">No agents yet — Deploy Team creates them automatically.</p>
               )}
             </CardContent>
           </Card>
@@ -416,8 +416,8 @@ export default function ProjectDetailPage() {
               {selectedAgentId ? (
                 <AgentLogStream logs={displayLogs} connected={connected} />
               ) : (
-                <div className="flex h-full flex-col items-center justify-center gap-2 text-sm text-zinc-500">
-                  <Bot className="h-8 w-8 text-zinc-700" />
+                <div className="flex h-full flex-col items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <Bot className="h-8 w-8 text-muted-foreground" />
                   Select an agent to view its live logs
                 </div>
               )}

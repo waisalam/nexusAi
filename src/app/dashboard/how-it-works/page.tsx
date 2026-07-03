@@ -60,9 +60,9 @@ export default function HowItWorksPage() {
     <div className="mx-auto max-w-4xl space-y-12 pb-10">
       {/* Header */}
       <div>
-        <p className="text-sm font-semibold uppercase tracking-widest text-indigo-400">How Nexus AI works</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight">From one task to one pull request</h1>
-        <p className="mt-3 max-w-2xl text-zinc-400">
+        <p className="text-sm font-semibold uppercase tracking-widest text-accent">How Nexus AI works</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">From one task to one pull request</h1>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
           Nexus AI turns a single plain-English task into a fully integrated, build-verified pull request —
           built by a team of autonomous agents working in parallel. Here&apos;s exactly what happens.
         </p>
@@ -70,20 +70,20 @@ export default function HowItWorksPage() {
 
       {/* Vertical pipeline */}
       <div className="relative">
-        <div className="absolute bottom-2 left-5.5 top-2 w-px bg-linear-to-b from-indigo-500/50 via-zinc-800 to-transparent" />
+        <div className="absolute bottom-2 left-5.5 top-2 w-px bg-border" />
         <div className="space-y-5">
           {STEPS.map((step, i) => (
             <Reveal key={step.title} delay={i * 60}>
               <div className="relative flex gap-5">
-                <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-indigo-500/30 bg-indigo-950/40 text-indigo-300">
+                <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-surface-2 text-accent">
                   <step.icon className="h-5 w-5" />
                 </div>
-                <div className="flex-1 rounded-xl border border-zinc-800 bg-[#12121c] p-5">
+                <div className="flex-1 rounded-xl border border-border bg-surface p-5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-indigo-400">STEP {i + 1}</span>
+                    <span className="text-xs font-bold text-accent">STEP {i + 1}</span>
                   </div>
-                  <h3 className="mt-1 text-base font-semibold text-white">{step.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-zinc-400">{step.desc}</p>
+                  <h3 className="mt-1 text-base font-semibold text-foreground">{step.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
                 </div>
               </div>
             </Reveal>
@@ -93,14 +93,14 @@ export default function HowItWorksPage() {
 
       {/* Pillars */}
       <div>
-        <h2 className="mb-4 text-lg font-semibold">What makes it fast &amp; reliable</h2>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">What makes it fast &amp; reliable</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {PILLARS.map((p, i) => (
             <Reveal key={p.title} delay={i * 80}>
-              <div className="hover-lift h-full rounded-xl border border-zinc-800 bg-[#12121c] p-5">
-                <p.icon className="h-5 w-5 text-indigo-400" />
-                <h3 className="mt-3 text-sm font-semibold text-white">{p.title}</h3>
-                <p className="mt-1.5 text-sm text-zinc-400">{p.desc}</p>
+              <div className="hover-lift h-full rounded-xl border border-border bg-surface p-5">
+                <p.icon className="h-5 w-5 text-accent" />
+                <h3 className="mt-3 text-sm font-semibold text-foreground">{p.title}</h3>
+                <p className="mt-1.5 text-sm text-muted-foreground">{p.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -108,9 +108,9 @@ export default function HowItWorksPage() {
       </div>
 
       {/* CTA */}
-      <div className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-linear-to-b from-indigo-950/40 to-[#12121c] p-8 text-center">
-        <h2 className="text-xl font-bold">Ready to deploy your team?</h2>
-        <p className="mt-2 text-sm text-zinc-400">Connect a repo, add a task, and hit Deploy Team.</p>
+      <div className="rounded-2xl border border-border bg-surface p-8 text-center">
+        <h2 className="text-xl font-bold text-foreground">Ready to deploy your team?</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Connect a repo, add a task, and hit Deploy Team.</p>
         <div className="mt-6 flex justify-center gap-3">
           <Button variant="primary" onClick={() => router.push("/dashboard/projects?new=true")}>
             <GithubIcon className="h-4 w-4" /> Connect a repository
