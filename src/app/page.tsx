@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import gsap from "gsap";
@@ -10,7 +10,7 @@ import {
   Cpu, Layers, Network, CheckCircle2, Lock, Eye, Bot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Logo, LogoMark, GithubIcon } from "@/components/ui/logo";
+import { Logo, GithubIcon } from "@/components/ui/logo";
 import { Reveal } from "@/components/ui/reveal";
 import { FlipReveal } from "@/components/ui/flip-reveal";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -166,6 +166,29 @@ function OrchestrationTerminal() {
   );
 }
 
+/** Editorial section header: a mono index/label chip with a rule extending to
+ * the right, then a large Bebas-condensed display title. */
+function SectionHead({ index, label, children, className = "" }: {
+  index: string;
+  label: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <div className="flex items-center gap-4">
+        <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.25em] text-accent">
+          [ {index} / {label} ]
+        </p>
+        <span className="h-px flex-1 bg-border" />
+      </div>
+      <h2 className="mt-5 font-(family-name:--font-bebas) text-4xl leading-none tracking-wide text-foreground sm:text-5xl lg:text-6xl">
+        {children}
+      </h2>
+    </div>
+  );
+}
+
 function Hero({ authed, router }: { authed: boolean; router: ReturnType<typeof useRouter> }) {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -230,7 +253,7 @@ function Hero({ authed, router }: { authed: boolean; router: ReturnType<typeof u
             className="group inline-flex items-center gap-3 border border-foreground/20 px-6 py-3 font-mono text-xs uppercase tracking-widest text-foreground transition-all duration-200 hover:border-accent hover:text-accent"
           >
             <ScrambleTextOnHover text={authed ? "Open Dashboard" : "Start Building"} duration={0.5} />
-            <BitmapChevron className="transition-transform duration-[400ms] ease-in-out group-hover:rotate-45" />
+            <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
           </button>
           <button
             onClick={() => router.push("/login")}
@@ -308,13 +331,12 @@ export default function Home() {
 
       {/* What is Nexus AI */}
       <section id="about" className="border-t border-border">
-        <div className="mx-auto max-w-[1600px] px-8 py-16">
-          <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-accent">What is Nexus AI</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <div className="mx-auto max-w-[1600px] px-8 py-20">
+          <Reveal>
+            <SectionHead index="01" label="What is Nexus AI">
               Not one assistant. <HighlightText>A whole engineering team.</HighlightText>
-            </h2>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
+            </SectionHead>
+            <p className="mt-6 max-w-2xl font-mono text-sm leading-relaxed text-muted-foreground">
               Most AI tools give you a single chat that edits one file at a time. Nexus AI deploys
               many specialized agents that divide the work, run at the same time, and coordinate
               so the result is integrated, verified, and ready to merge.
@@ -325,22 +347,21 @@ export default function Home() {
 
       {/* Pipeline — metallic cards that flip into place on scroll */}
       <section id="how-it-works" className="border-t border-border">
-        <div className="mx-auto max-w-[1600px] px-8 py-16">
-          <Reveal className="mb-14 text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-accent">How it works</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">From one task to one pull request</h2>
+        <div className="mx-auto max-w-[1600px] px-8 py-20">
+          <Reveal className="mb-12">
+            <SectionHead index="02" label="How it works">From one task to one pull request</SectionHead>
           </Reveal>
 
           <div className="flip-wrap grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {PIPELINE.map((step, i) => (
               <FlipReveal key={step.title} delay={i * 100} className="card-flat group h-full p-6">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="icon-chip h-11 w-11">
+                <div className="mb-5 flex items-start justify-between">
+                  <span className="font-(family-name:--font-bebas) text-4xl leading-none text-muted-foreground/40">0{i + 1}</span>
+                  <div className="icon-chip h-10 w-10">
                     <step.icon className="h-5 w-5" />
                   </div>
-                  <span className="font-mono text-[11px] font-bold tracking-widest text-muted-foreground">0{i + 1}</span>
                 </div>
-                <h3 className="text-base font-semibold text-foreground">{step.title}</h3>
+                <h3 className="font-mono text-xs uppercase tracking-widest text-foreground">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
               </FlipReveal>
             ))}
@@ -350,19 +371,18 @@ export default function Home() {
 
       {/* Features — same flip-card treatment */}
       <section id="features" className="border-t border-border">
-        <div className="mx-auto max-w-[1600px] px-8 py-16">
-          <Reveal className="mb-12 text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-accent">Why teams choose it</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Built for speed and trust</h2>
+        <div className="mx-auto max-w-[1600px] px-8 py-20">
+          <Reveal className="mb-12">
+            <SectionHead index="03" label="Why teams choose it">Built for speed and trust</SectionHead>
           </Reveal>
 
           <div className="flip-wrap grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f, i) => (
-              <FlipReveal key={f.title} delay={(i % 3) * 90} className="card-flat h-full p-6">
+              <FlipReveal key={f.title} delay={(i % 3) * 90} className="card-flat group h-full p-6">
                 <div className="icon-chip h-10 w-10">
                   <f.icon className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-foreground">{f.title}</h3>
+                <h3 className="mt-4 font-mono text-xs uppercase tracking-widest text-foreground">{f.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
               </FlipReveal>
             ))}
@@ -372,13 +392,15 @@ export default function Home() {
 
       {/* Trust strip */}
       <section className="border-t border-border">
-        <div className="mx-auto max-w-[1600px] px-8 py-8">
+        <div className="mx-auto max-w-[1600px] px-8 py-10">
           <Reveal>
-            <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-surface px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:gap-10">
-              {TRUST.map((t) => (
-                <span key={t.text} className="flex items-center gap-2">
-                  <t.icon className="h-4 w-4 text-accent" /> {t.text}
-                </span>
+            <div className="grid divide-y divide-border overflow-hidden rounded-none border border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+              {TRUST.map((t, i) => (
+                <div key={t.text} className="flex items-center gap-3 bg-surface px-6 py-5">
+                  <span className="font-mono text-[10px] text-muted-foreground">0{i + 1}</span>
+                  <t.icon className="h-4 w-4 shrink-0 text-accent" />
+                  <span className="text-sm text-muted-foreground">{t.text}</span>
+                </div>
               ))}
             </div>
           </Reveal>
@@ -389,23 +411,34 @@ export default function Home() {
       <section id="cta" className="border-t border-border">
         <div className="mx-auto max-w-[1600px] px-8 py-24">
           <Reveal>
-            <div className="glass-metal mx-auto max-w-4xl p-10 text-center sm:p-14">
+            <div className="glass-metal relative overflow-hidden p-10 sm:p-16">
               <div className="metal-edge" />
-              <LogoMark size={40} className="relative mx-auto text-accent" />
-              <h2 className="relative mt-5 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Connect a repo. <HighlightText>Deploy your team.</HighlightText>
-              </h2>
-              <p className="relative mx-auto mt-3 max-w-lg text-muted-foreground">
-                Sign up, paste a GitHub URL, describe what you want — and watch a team of agents build it.
-              </p>
-              <div className="relative mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Button variant="primary" size="lg" onClick={() => router.push(authed ? "/dashboard" : "/signup")}>
-                  <ScrambleTextOnHover text={authed ? "Open Dashboard" : "Create your account"} duration={0.5} />
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="lg" onClick={() => router.push("/login")}>
-                  Sign in
-                </Button>
+              <div className="relative flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-end">
+                <div className="max-w-2xl">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-accent">[ 04 / Get started ]</p>
+                  <h2 className="mt-5 font-(family-name:--font-bebas) text-5xl leading-[0.95] tracking-wide text-foreground sm:text-6xl lg:text-7xl">
+                    Connect a repo.<br />
+                    <HighlightText>Deploy your team.</HighlightText>
+                  </h2>
+                  <p className="mt-6 max-w-md font-mono text-sm leading-relaxed text-muted-foreground">
+                    Sign up, paste a GitHub URL, describe what you want — and watch a team of agents build it.
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-col gap-3">
+                  <button
+                    onClick={() => router.push(authed ? "/dashboard" : "/signup")}
+                    className="group inline-flex items-center justify-between gap-6 border border-foreground/20 px-6 py-3.5 font-mono text-xs uppercase tracking-widest text-foreground transition-all duration-200 hover:border-accent hover:text-accent"
+                  >
+                    <ScrambleTextOnHover text={authed ? "Open Dashboard" : "Create Account"} duration={0.5} />
+                    <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
+                  </button>
+                  <button
+                    onClick={() => router.push("/login")}
+                    className="px-6 py-2 text-center font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Sign in
+                  </button>
+                </div>
               </div>
             </div>
           </Reveal>
