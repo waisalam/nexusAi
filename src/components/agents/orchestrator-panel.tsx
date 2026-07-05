@@ -104,6 +104,25 @@ export function OrchestratorPanel({ run, onStop }: OrchestratorPanelProps) {
             {run.error_message}
           </div>
         )}
+        {isFailed && (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-surface p-2.5 text-xs">
+            <span className="text-muted-foreground">
+              Nexus AI is still in development — a run hiccup helps us most when you tell us about it.
+            </span>
+            <button
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("nexus:feedback", {
+                    detail: { message: `Demo run failed: ${run.error_message || "(no message)"}\n\nWhat I was trying to build: ` },
+                  })
+                )
+              }
+              className="shrink-0 rounded-md border border-accent/40 bg-accent/10 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/20"
+            >
+              Report this
+            </button>
+          </div>
+        )}
 
         {/* Live brain logs */}
         <div className="rounded-lg border border-border bg-background">

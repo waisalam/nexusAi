@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageSquarePlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,18 @@ export function FeedbackWidget() {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
+
+  // Any part of the app (e.g. a failed demo run) can open this pre-filled by
+  // dispatching `window.dispatchEvent(new CustomEvent("nexus:feedback", { detail }))`.
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const detail = (e as CustomEvent<{ message?: string }>).detail;
+      if (detail?.message) setMessage((m) => m || detail.message!);
+      setOpen(true);
+    };
+    window.addEventListener("nexus:feedback", onOpen);
+    return () => window.removeEventListener("nexus:feedback", onOpen);
+  }, []);
 
   const submit = async () => {
     if (!message.trim() || sending) return;

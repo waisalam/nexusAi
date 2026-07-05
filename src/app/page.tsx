@@ -19,6 +19,7 @@ import { HighlightText } from "@/components/highlight-text";
 import { ScrambleTextOnHover } from "@/components/scramble-text";
 import { SplitFlapAudioProvider, SplitFlapText, SplitFlapMuteToggle } from "@/components/split-flap-text";
 import { BitmapChevron } from "@/components/bitmap-chevron";
+import { WaitlistForm } from "@/components/waitlist-form";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
@@ -226,6 +227,9 @@ function Hero({ authed, router }: { authed: boolean; router: ReturnType<typeof u
       </div>
 
       <div ref={contentRef} className="mx-auto w-full max-w-5xl">
+        <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.25em] text-accent">
+          [ Early access · In development ]
+        </p>
         <SplitFlapAudioProvider>
           <div className="relative flex items-end justify-between gap-4">
             <SplitFlapText
@@ -247,24 +251,39 @@ function Hero({ authed, router }: { authed: boolean; router: ReturnType<typeof u
           it works.
         </p>
 
-        <div className="mt-14 flex flex-wrap items-center gap-8">
-          <button
-            onClick={() => router.push(authed ? "/dashboard" : "/signup")}
-            className="group inline-flex items-center gap-3 border border-foreground/20 px-6 py-3 font-mono text-xs uppercase tracking-widest text-foreground transition-all duration-200 hover:border-accent hover:text-accent"
-          >
-            <ScrambleTextOnHover text={authed ? "Open Dashboard" : "Start Building"} duration={0.5} />
-            <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
-          </button>
-          <button
-            onClick={() => router.push("/login")}
-            className="font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors duration-200 hover:text-foreground"
-          >
-            Continue with GitHub
-          </button>
-        </div>
+        {authed ? (
+          <div className="mt-14 flex flex-wrap items-center gap-8">
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="group inline-flex items-center gap-3 border border-foreground/20 bg-foreground px-6 py-3 font-mono text-xs uppercase tracking-widest text-background transition-all duration-200 hover:bg-accent hover:text-accent-foreground"
+            >
+              <ScrambleTextOnHover text="Open Dashboard" duration={0.5} />
+              <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
+            </button>
+          </div>
+        ) : (
+          <div className="mt-12">
+            <p className="mb-4 max-w-md font-mono text-xs leading-relaxed text-muted-foreground">
+              Founding members get early access and a lifetime discount when paid plans launch.
+            </p>
+            <WaitlistForm source="hero" />
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <button
+                onClick={() => router.push("/signup")}
+                className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-foreground transition-colors duration-200 hover:text-accent"
+              >
+                <ScrambleTextOnHover text="Try the live demo" duration={0.5} />
+                <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
+              </button>
+              <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                Early build — if the demo errors, tap Feedback (bottom-right)
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-          <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> Free runs</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> 5 free runs</span>
           <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> No card</span>
           <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> Any repo</span>
         </div>
@@ -415,30 +434,38 @@ export default function Home() {
               <div className="metal-edge" />
               <div className="relative flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-end">
                 <div className="max-w-2xl">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-accent">[ 04 / Get started ]</p>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-accent">[ 04 / Early access ]</p>
                   <h2 className="mt-5 font-(family-name:--font-bebas) text-5xl leading-[0.95] tracking-wide text-foreground sm:text-6xl lg:text-7xl">
-                    Connect a repo.<br />
+                    Get in early.<br />
                     <HighlightText>Deploy your team.</HighlightText>
                   </h2>
                   <p className="mt-6 max-w-md font-mono text-sm leading-relaxed text-muted-foreground">
-                    Sign up, paste a GitHub URL, describe what you want — and watch a team of agents build it.
+                    Nexus AI is in active development. Join the waitlist for a founding-member spot,
+                    or jump straight into the live demo now.
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-col gap-3">
-                  <button
-                    onClick={() => router.push(authed ? "/dashboard" : "/signup")}
-                    className="group inline-flex items-center justify-between gap-6 border border-foreground/20 px-6 py-3.5 font-mono text-xs uppercase tracking-widest text-foreground transition-all duration-200 hover:border-accent hover:text-accent"
-                  >
-                    <ScrambleTextOnHover text={authed ? "Open Dashboard" : "Create Account"} duration={0.5} />
-                    <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
-                  </button>
-                  <button
-                    onClick={() => router.push("/login")}
-                    className="px-6 py-2 text-center font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    Sign in
-                  </button>
-                </div>
+                {authed ? (
+                  <div className="flex shrink-0 flex-col gap-3">
+                    <button
+                      onClick={() => router.push("/dashboard")}
+                      className="group inline-flex items-center justify-between gap-6 border border-foreground/20 bg-foreground px-6 py-3.5 font-mono text-xs uppercase tracking-widest text-background transition-all duration-200 hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <ScrambleTextOnHover text="Open Dashboard" duration={0.5} />
+                      <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex w-full shrink-0 flex-col gap-4 lg:w-auto">
+                    <WaitlistForm source="cta" />
+                    <button
+                      onClick={() => router.push("/signup")}
+                      className="group inline-flex items-center gap-2 self-start font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      <ScrambleTextOnHover text="Or try the live demo" duration={0.5} />
+                      <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </Reveal>
