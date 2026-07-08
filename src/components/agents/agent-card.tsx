@@ -7,8 +7,8 @@ import type { AgentResponse } from "@/types/agent";
 
 interface AgentCardProps {
   agent: AgentResponse;
-  selected: boolean;
-  onClick: () => void;
+  selected?: boolean;
+  onClick?: () => void;
 }
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -38,7 +38,7 @@ export function AgentCard({ agent, selected, onClick }: AgentCardProps) {
 
   return (
     <Card
-      className={`cursor-pointer transition-all ${selected ? "border-accent/60 bg-accent/10" : "hover:border-muted-foreground"}`}
+      className={`transition-all ${onClick ? "cursor-pointer" : ""} ${selected ? "border-accent/60 bg-accent/10" : "hover:border-muted-foreground"}`}
       onClick={onClick}
     >
       <CardContent className="flex items-center gap-4 p-4">

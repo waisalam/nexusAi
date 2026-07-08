@@ -17,15 +17,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AgentCard } from "@/components/agents/agent-card";
-import { AgentLogStream } from "@/components/agents/agent-log-stream";
 import { FileLockPanel } from "@/components/agents/file-lock-indicator";
 import { OrchestratorPanel } from "@/components/agents/orchestrator-panel";
 import { ConversationTimeline } from "@/components/agents/conversation-timeline";
 import { LiveAgentMap } from "@/components/agents/live-agent-map";
 import { MemoryPanel } from "@/components/agents/memory-panel";
 import { useProject, useSyncProject } from "@/hooks/use-projects";
-import { useTasks, useCreateTask, useAgents, useCreateAgent, useStopExecution, useAgentLogs } from "@/hooks/use-agents";
-import { useAgentStream } from "@/hooks/use-sse";
+import { useTasks, useCreateTask, useAgents, useCreateAgent, useStopExecution } from "@/hooks/use-agents";
 import { useActiveLocks } from "@/hooks/use-locks";
 import { useOrchestrationRuns, useStartOrchestration, useStopOrchestration } from "@/hooks/use-orchestrator";
 import { useMessages } from "@/hooks/use-messages";
@@ -56,14 +54,9 @@ export default function ProjectDetailPage() {
   const startOrchestration = useStartOrchestration(projectId);
   const stopOrchestration = useStopOrchestration();
 
-  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [showAgentForm, setShowAgentForm] = useState(false);
   const [agentName, setAgentName] = useState("");
-  const { logs, connected } = useAgentStream(selectedAgentId);
-  const { data: historicalLogs } = useAgentLogs(selectedAgentId || "");
-
-  const displayLogs = logs.length > 0 ? logs : (historicalLogs || []);
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
@@ -83,7 +76,6 @@ export default function ProjectDetailPage() {
   const onCreateAgent = async (name?: string) => {
     try {
       const agent = await createAgent.mutateAsync(name ? { name } : {});
-      setSelectedAgentId(agent.id);
       toast.success(`${agent.name} created`);
       setShowAgentForm(false);
       setAgentName("");
@@ -149,9 +141,17 @@ export default function ProjectDetailPage() {
   const runActive = !!activeRun && !["completed", "failed"].includes(activeRun.status);
 
   const allTasks = tasksData?.tasks || [];
+  // Show ONLY the real tasks the user created — not the internal per-agent subtasks
+  // ("part 3/5"…) the orchestrator generates. Those are run-internal detail and were
+  // cluttering the list (39 rows for a handful of real tasks).
   const parentTasks = allTasks.filter(t => !t.parent_task_id);
-  const childrenOf = (id: string) => allTasks.filter(t => t.parent_task_id === id);
-  const visibleAgents = (agents || []).filter(a => a.name !== "Fixer (Orchestrator)");
+  // Only agents that are relevant NOW — currently working, or idle and available.
+  // Finished agents (completed/error) from past runs pile up forever and were showing
+  // as a long duplicate-looking graveyard; the live run view is where a run's agents
+  // belong.
+  const visibleAgents = (agents || []).filter(
+    a => a.name !== "Fixer (Orchestrator)" && a.status !== "completed" && a.status !== "error"
+  );
 
   const renderTaskRow = (task: typeof allTasks[number], isChild = false) => (
     <div key={task.id} className={cn("flex items-center justify-between rounded-lg border border-border bg-surface p-3 transition-colors hover:border-muted-foreground", isChild && "ml-4 border-l-2 border-l-accent/60")}>
@@ -327,23 +327,20 @@ export default function ProjectDetailPage() {
       {/* Live agent map — who's working on what, in real time */}
       {runActive && <LiveAgentMap agents={agents || []} locks={locksData?.locks || []} />}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left Column: Tasks + Agents + Locks */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Left Column: Tasks + Locks */}
         <div className="space-y-6">
           {/* Tasks */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <ListTodo className="h-4 w-4 text-accent" /> Tasks ({tasksData?.total || 0})
+                <ListTodo className="h-4 w-4 text-accent" /> Tasks ({parentTasks.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {parentTasks.length ? (
                 parentTasks.map((task) => (
-                  <div key={task.id} className="space-y-2">
-                    {renderTaskRow(task)}
-                    {childrenOf(task.id).map((child) => renderTaskRow(child, true))}
-                  </div>
+                  <div key={task.id}>{renderTaskRow(task)}</div>
                 ))
               ) : (
                 <div className="rounded-lg border border-dashed border-border py-8 text-center">
@@ -356,12 +353,19 @@ export default function ProjectDetailPage() {
             </CardContent>
           </Card>
 
-          {/* Agents (hide Fixer — it's orchestrator-internal) */}
+          {/* File Locks */}
+          <FileLockPanel locks={locksData?.locks || []} />
+        </div>
+
+        {/* Right Column: Agents + coordination */}
+        <div className="space-y-6">
+          {/* Agents (hide Fixer — it's orchestrator-internal; finished agents from
+              past runs are hidden so the list doesn't pile up) */}
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Bot className="h-4 w-4 text-accent" /> Agents ({visibleAgents.length})
+                  <Bot className="h-4 w-4 text-accent" /> Active Agents ({visibleAgents.length})
                 </CardTitle>
                 <Button variant="ghost" size="sm" onClick={openAgentForm} title="Spawn an agent (optional)">
                   <Plus className="h-3.5 w-3.5" />
@@ -373,11 +377,7 @@ export default function ProjectDetailPage() {
                 visibleAgents.map((agent) => (
                   <div key={agent.id} className="flex items-center gap-2">
                     <div className="min-w-0 flex-1">
-                      <AgentCard
-                        agent={agent}
-                        selected={selectedAgentId === agent.id}
-                        onClick={() => setSelectedAgentId(agent.id)}
-                      />
+                      <AgentCard agent={agent} />
                     </div>
                     {BUSY_STATUSES.includes(agent.status) && (
                       <Button variant="destructive" size="icon" title="Stop agent" onClick={() => onStopAgent(agent.id)}>
@@ -387,42 +387,16 @@ export default function ProjectDetailPage() {
                   </div>
                 ))
               ) : (
-                <p className="py-2 text-sm text-muted-foreground">No agents yet — Deploy Team creates them automatically.</p>
+                <p className="py-2 text-sm text-muted-foreground">No active agents — Deploy Team spins them up automatically when you run a task.</p>
               )}
             </CardContent>
           </Card>
-
-          {/* File Locks */}
-          <FileLockPanel locks={locksData?.locks || []} />
 
           {/* Agent-to-agent conversation timeline */}
           <ConversationTimeline messages={messages || []} />
 
           {/* AI Memory */}
           <MemoryPanel projectId={projectId} />
-        </div>
-
-        {/* Right Column: Agent Log Stream */}
-        <div className="lg:col-span-2">
-          <Card className="flex h-175 flex-col">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">
-                {selectedAgentId
-                  ? `Agent Logs — ${visibleAgents.find(a => a.id === selectedAgentId)?.name || "Agent"}`
-                  : "Agent Logs"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 overflow-hidden p-0">
-              {selectedAgentId ? (
-                <AgentLogStream logs={displayLogs} connected={connected} />
-              ) : (
-                <div className="flex h-full flex-col items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <Bot className="h-8 w-8 text-muted-foreground" />
-                  Select an agent to view its live logs
-                </div>
-              )}
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
