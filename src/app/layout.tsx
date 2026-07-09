@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono, Bebas_Neue } from "next/font/google";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider, NO_FLASH_SCRIPT } from "@/components/providers/theme-provider";
 import { ThemedToaster } from "@/components/providers/themed-toaster";
 import { FeedbackWidget } from "@/components/feedback-widget";
+import { ReferralTracker } from "@/components/referral-tracker";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { AnimatedNoise } from "@/components/animated-noise";
 import "./globals.css";
@@ -48,6 +50,9 @@ export default function RootLayout({
           <QueryProvider>
             <SmoothScroll>
               <AnimatedNoise opacity={0.02} fixed />
+              <Suspense fallback={null}>
+                <ReferralTracker />
+              </Suspense>
               {children}
               <FeedbackWidget />
               <ThemedToaster />

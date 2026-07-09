@@ -443,6 +443,13 @@ export default function Home() {
                     Nexus AI is in active development. Join the waitlist for a founding-member spot,
                     or jump straight into the live demo now.
                   </p>
+                  <Link
+                    href="/contact"
+                    className="group mt-5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-accent transition-colors hover:text-foreground"
+                  >
+                    <ScrambleTextOnHover text="Need a custom plan for your team? Talk to us" duration={0.5} />
+                    <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
+                  </Link>
                 </div>
                 {authed ? (
                   <div className="flex shrink-0 flex-col gap-3">
@@ -480,7 +487,7 @@ export default function Home() {
           <div className="flex gap-5">
             <Link href="/login" className="hover:text-foreground"><ScrambleTextOnHover text="Sign in" duration={0.4} /></Link>
             <Link href="/signup" className="hover:text-foreground"><ScrambleTextOnHover text="Get started" duration={0.4} /></Link>
-            <Link href="/contact" className="hover:text-foreground"><ScrambleTextOnHover text="Contact" duration={0.4} /></Link>
+            <Link href="/contact" className="hover:text-foreground"><ScrambleTextOnHover text="Custom plan" duration={0.4} /></Link>
           </div>
         </div>
       </footer>
