@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import { apiClient } from "@/lib/api-client";
+import { ByomCard } from "@/components/settings/byom-card";
 import type { UserResponse } from "@/types/api";
 
 export default function SettingsPage() {
@@ -61,6 +62,8 @@ export default function SettingsPage() {
           </Button>
         </CardContent>
       </Card>
+
+      <ByomCard />
 
       <Card>
         <CardHeader>
