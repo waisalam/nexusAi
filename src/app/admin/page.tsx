@@ -45,7 +45,7 @@ export default function AdminPage() {
   const [rows, setRows] = useState<FeedbackRow[]>([]);
   const [users, setUsers] = useState<UserRow[]>([]);
   const [leads, setLeads] = useState<LeadRow[]>([]);
-  const [tab, setTab] = useState<"leads" | "feedback" | "contact" | "users">("leads");
+  const [tab, setTab] = useState<"leads" | "waitlist" | "feedback" | "contact" | "users">("leads");
   const [refFilter, setRefFilter] = useState("");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -143,7 +143,15 @@ export default function AdminPage() {
 
   const feedback = rows.filter((r) => r.kind === "feedback");
   const contact = rows.filter((r) => r.kind === "contact");
-  const genericList = tab === "feedback" ? feedback : tab === "contact" ? contact : [];
+  const waitlist = rows.filter((r) => r.kind === "waitlist");
+  // Demand meter: waitlist signups per source (hero/cta vs figma-mcp vs 3d-mcp) —
+  // this decides which upcoming capability gets built first.
+  const waitlistBySource = waitlist.reduce<Record<string, number>>((acc, r) => {
+    const src = r.message || "unknown";
+    acc[src] = (acc[src] || 0) + 1;
+    return acc;
+  }, {});
+  const genericList = tab === "feedback" ? feedback : tab === "contact" ? contact : tab === "waitlist" ? waitlist : [];
 
   return (
     <div className="mx-auto max-w-5xl p-8">
@@ -171,7 +179,7 @@ export default function AdminPage() {
       </div>
 
       <div className="mb-4 flex gap-2">
-        {(["leads", "feedback", "contact", "users"] as const).map((t) => (
+        {(["leads", "waitlist", "feedback", "contact", "users"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -280,6 +288,23 @@ export default function AdminPage() {
         </div>
       ) : (
         <div className="space-y-2">
+          {tab === "waitlist" && Object.keys(waitlistBySource).length > 0 && (
+            <div className="mb-3 rounded-xl border border-border bg-surface p-4">
+              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Demand by source (build the most-requested first)
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(waitlistBySource)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([src, n]) => (
+                    <span key={src} className="rounded-lg border border-border px-2.5 py-1 text-xs text-foreground">
+                      <span className="font-mono text-accent">{src}</span>{" "}
+                      <span className="text-muted-foreground">× {n}</span>
+                    </span>
+                  ))}
+              </div>
+            </div>
+          )}
           {tab === "users"
             ? users.map((u) => (
                 <div key={u.id} className="rounded-lg border border-border bg-surface p-4 text-sm">

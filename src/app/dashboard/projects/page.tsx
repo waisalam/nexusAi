@@ -3,17 +3,11 @@
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Plus, FolderGit2, X } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { GithubIcon } from "@/components/ui/logo";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ProjectCard } from "@/components/dashboard/project-card";
-import { useProjects, useCreateProject } from "@/hooks/use-projects";
-import { projectCreateSchema, type ProjectCreateFormData } from "@/lib/validations";
+import { NewProjectWizard } from "@/components/dashboard/new-project-wizard";
+import { useProjects } from "@/hooks/use-projects";
 
 export default function ProjectsPage() {
   return (
@@ -27,27 +21,6 @@ function ProjectsContent() {
   const searchParams = useSearchParams();
   const [showForm, setShowForm] = useState(searchParams.get("new") === "true");
   const { data, isLoading } = useProjects();
-  const createProject = useCreateProject();
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<ProjectCreateFormData>({
-    resolver: zodResolver(projectCreateSchema),
-  });
-
-  const onSubmit = async (formData: ProjectCreateFormData) => {
-    try {
-      await createProject.mutateAsync(formData);
-      toast.success("Repository connected! Cloning & analyzing in the background…");
-      reset();
-      setShowForm(false);
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Failed to create project");
-    }
-  };
 
   const hasProjects = !!data?.projects.length;
 
@@ -65,43 +38,7 @@ function ProjectsContent() {
       </div>
 
       {showForm && (
-        <Card className="animate-scale-in border-accent/25">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <GithubIcon className="h-5 w-5 text-accent" /> Connect a GitHub Repository
-            </CardTitle>
-            <CardDescription>We clone & analyze it once, then your agents work from that memory.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">GitHub Repository URL</label>
-                <Input placeholder="https://github.com/owner/repo" {...register("github_repo_url")} />
-                {errors.github_repo_url && (
-                  <p className="text-xs text-destructive">{errors.github_repo_url.message}</p>
-                )}
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Project Name (optional)</label>
-                  <Input placeholder="My Project" {...register("name")} />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Description (optional)</label>
-                  <Input placeholder="A brief description" {...register("description")} />
-                </div>
-              </div>
-              <div className="flex gap-3 pt-1">
-                <Button type="submit" variant="primary" disabled={isSubmitting}>
-                  {isSubmitting ? "Connecting..." : "Connect Repository"}
-                </Button>
-                <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+        <NewProjectWizard onDone={() => setShowForm(false)} onCancel={() => setShowForm(false)} />
       )}
 
       {isLoading ? (
