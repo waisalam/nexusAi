@@ -241,14 +241,13 @@ function Hero({ authed, router }: { authed: boolean; router: ReturnType<typeof u
           </div>
         </SplitFlapAudioProvider>
 
-        <h2 className="mt-5 font-[var(--font-bebas)] text-[clamp(1.25rem,3.2vw,2.25rem)] tracking-wide text-muted-foreground">
+        <h2 className="mt-5 font-(family-name:--font-bebas) text-[clamp(1.25rem,3.2vw,2.25rem)] tracking-wide text-muted-foreground">
           One task in. One verified pull request out.
         </h2>
 
-        <p className="mt-8 max-w-xl font-mono text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Nexus AI splits your task across a team of AI agents that code in parallel on separate
-          files, integrates their work, and verifies the build — it even runs your app to prove
-          it works.
+        <p className="mt-6 max-w-xl font-mono text-sm leading-relaxed text-muted-foreground sm:text-base">
+          An autonomous AI engineering team: it splits your task across parallel agents,
+          integrates their work, verifies the build, and opens one pull request.
         </p>
 
         {authed ? (
@@ -263,26 +262,20 @@ function Hero({ authed, router }: { authed: boolean; router: ReturnType<typeof u
           </div>
         ) : (
           <div className="mt-12">
-            <p className="mb-4 max-w-md font-mono text-xs leading-relaxed text-muted-foreground">
-              Founding members get early access and a lifetime discount when paid plans launch.
-            </p>
             <WaitlistForm source="hero" />
-            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
               <button
                 onClick={() => router.push("/signup")}
                 className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-foreground transition-colors duration-200 hover:text-accent"
               >
-                <ScrambleTextOnHover text="Try the live demo" duration={0.5} />
+                <ScrambleTextOnHover text="Or try the live demo" duration={0.5} />
                 <BitmapChevron className="transition-transform duration-400 ease-in-out group-hover:rotate-45" />
               </button>
-              <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-                Early build — if the demo errors, tap Feedback (bottom-right)
-              </span>
             </div>
           </div>
         )}
 
-        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
           <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> 5 free runs</span>
           <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> No card</span>
           <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-accent" /> Any repo</span>

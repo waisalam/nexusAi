@@ -49,22 +49,40 @@ export default function AdminPage() {
   const [refFilter, setRefFilter] = useState("");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const [partialError, setPartialError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
+    // Each section loads INDEPENDENTLY — one failing endpoint (e.g. the backend not
+    // yet redeployed with a new route) must not blank the whole panel. Only a 403
+    // (not an admin) is a full-page error.
+    Promise.allSettled([
       apiClient.get<Stats>("/api/v1/admin/stats"),
       apiClient.get<FeedbackRow[]>("/api/v1/admin/feedback"),
       apiClient.get<UserRow[]>("/api/v1/admin/users"),
       apiClient.get<LeadRow[]>("/api/v1/admin/leads"),
     ])
       .then(([s, f, u, l]) => {
-        setStats(s);
-        setRows(f);
-        setUsers(u);
-        setLeads(l);
+        if (s.status === "fulfilled") setStats(s.value);
+        if (f.status === "fulfilled") setRows(f.value);
+        if (u.status === "fulfilled") setUsers(u.value);
+        if (l.status === "fulfilled") setLeads(l.value);
+        const results = [s, f, u, l];
+        if (results.some((r) => r.status === "rejected" && (r.reason as { status?: number })?.status === 403)) {
+          setError("You're not authorized to view this.");
+          return;
+        }
+        const failed: string[] = [];
+        if (s.status === "rejected") failed.push("stats");
+        if (f.status === "rejected") failed.push("feedback");
+        if (u.status === "rejected") failed.push("users");
+        if (l.status === "rejected") failed.push("leads");
+        if (failed.length === results.length) {
+          setError("Failed to load admin data — is the backend up to date?");
+        } else if (failed.length > 0) {
+          setPartialError(`Couldn't load: ${failed.join(", ")} (backend may need a redeploy for new endpoints).`);
+        }
       })
-      .catch((e) => setError(e?.status === 403 ? "You're not authorized to view this." : "Failed to load admin data."))
       .finally(() => setLoading(false));
   }, []);
 
@@ -130,6 +148,12 @@ export default function AdminPage() {
   return (
     <div className="mx-auto max-w-5xl p-8">
       <h1 className="mb-6 text-2xl font-semibold text-foreground">Admin</h1>
+
+      {partialError && (
+        <div className="mb-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-600">
+          {partialError}
+        </div>
+      )}
 
       <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {[
