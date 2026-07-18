@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { apiClient } from "@/lib/api-client";
-import { ByomCard } from "@/components/settings/byom-card";
 import type { UserResponse } from "@/types/api";
 
 export default function SettingsPage() {
@@ -63,7 +63,15 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <ByomCard />
+      <Card>
+        <CardHeader>
+          <CardTitle>Your models</CardTitle>
+          <CardDescription>
+            Bring your own model keys and per-role routing moved to the dedicated{" "}
+            <Link href="/dashboard/models" className="text-accent hover:underline">Models</Link> tab.
+          </CardDescription>
+        </CardHeader>
+      </Card>
 
       <Card>
         <CardHeader>
