@@ -28,6 +28,8 @@ export interface ProjectResponse {
   status: string;
   last_synced_at: string | null;
   last_synced_sha: string | null;
+  model_routing_json: Record<string, string> | null;
+  workspace: "main" | "studio";
   created_at: string;
   updated_at: string;
 }

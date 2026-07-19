@@ -398,6 +398,18 @@ export default function RunDetailPage() {
         </a>
       )}
 
+      {/* Studio: the loop continues — brief the team again on this same repo */}
+      {!isActive && project.workspace === "studio" && (
+        <Link href={`/dashboard/studio/${projectId}`}>
+          <div className="mt-2 flex cursor-pointer items-center justify-between rounded-xl border border-border bg-surface px-5 py-4 transition-colors hover:border-accent">
+            <span className="text-sm text-foreground">
+              Done reviewing? <span className="text-muted-foreground">Give your team the next task on this repo.</span>
+            </span>
+            <span className="font-mono text-[11px] uppercase tracking-widest text-accent">Brief again →</span>
+          </div>
+        </Link>
+      )}
+
       {/* ── Activity: chat timeline (Brain ↔ team), collapsible ────────── */}
       <details open={isActive} className="group rounded-xl border border-border bg-surface">
         <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 [&::-webkit-details-marker]:hidden">
