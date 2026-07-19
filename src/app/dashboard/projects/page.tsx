@@ -20,7 +20,8 @@ export default function ProjectsPage() {
 function ProjectsContent() {
   const searchParams = useSearchParams();
   const [showForm, setShowForm] = useState(searchParams.get("new") === "true");
-  const { data, isLoading } = useProjects();
+  // Company surface only — Studio (BYOM) repos live in /studio, never mixed here.
+  const { data, isLoading } = useProjects("main");
 
   const hasProjects = !!data?.projects.length;
 

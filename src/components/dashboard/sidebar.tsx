@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FolderGit2, Settings, Sparkles, KeyRound } from "lucide-react";
+import { LayoutDashboard, FolderGit2, Settings, Sparkles, KeyRound, Orbit } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/logo";
 import { ScrambleTextOnHover } from "@/components/scramble-text";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/studio", label: "Studio", icon: Orbit },
   { href: "/dashboard/projects", label: "Projects", icon: FolderGit2 },
   { href: "/dashboard/models", label: "Models", icon: KeyRound },
   { href: "/dashboard/how-it-works", label: "How it works", icon: Sparkles },

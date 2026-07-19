@@ -4,10 +4,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import type { ProjectListResponse, ProjectResponse } from "@/types/api";
 
-export function useProjects() {
+export function useProjects(workspace?: "main" | "studio") {
   return useQuery<ProjectListResponse>({
-    queryKey: ["projects"],
-    queryFn: () => apiClient.get("/api/v1/projects"),
+    queryKey: ["projects", { workspace: workspace || "all" }],
+    queryFn: () =>
+      apiClient.get(`/api/v1/projects${workspace ? `?workspace=${workspace}` : ""}`),
   });
 }
 
@@ -22,7 +23,7 @@ export function useProject(projectId: string) {
 export function useCreateProject() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: { github_repo_url: string; name?: string; description?: string }) =>
+    mutationFn: (data: { github_repo_url: string; name?: string; description?: string; workspace?: "main" | "studio" }) =>
       apiClient.post<ProjectResponse>("/api/v1/projects", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
