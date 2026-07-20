@@ -39,7 +39,7 @@ export const AGENT_ROLES: {
 }[] = [
   { key: "brain", name: "Brain", duty: "Reads your repo, splits the work, writes the plan every agent follows.", icon: BrainCircuit },
   { key: "coder", name: "Coder", duty: "Writes the logic and backend code.", icon: Code2 },
-  { key: "designer", name: "Designer", duty: "Writes the UI — components, layouts, styles.", icon: Palette },
+  { key: "designer", name: "Designer", duty: "Writes the UI — components, layouts, styles. Tip: a vision model here (Claude/GPT/Gemini via OpenRouter) unlocks Visual QA — it screenshots your app and fixes what looks off.", icon: Palette },
   { key: "fixer", name: "Fixer", duty: "Reads build errors and patches them until green.", icon: Wrench },
   { key: "reviewer", name: "Reviewer", duty: "Reviews the work before anything is built.", icon: ShieldCheck },
   { key: "test_writer", name: "Test writer", duty: "Writes the tests that prove it works.", icon: FlaskConical },

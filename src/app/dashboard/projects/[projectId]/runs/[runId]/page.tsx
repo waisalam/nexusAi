@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -69,6 +69,7 @@ export default function RunDetailPage() {
   const run = runs?.find((r) => r.id === runId);
   const { logs: brainLogs, connected } = useOrchestratorStream(run ? run.id : null);
   const feedRef = useRef<HTMLDivElement>(null);
+  const [feedFilter, setFeedFilter] = useState("");
 
   useEffect(() => {
     if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight;
@@ -426,12 +427,21 @@ export default function RunDetailPage() {
             </span>
           </span>
         </summary>
-        <div ref={feedRef} className="max-h-96 space-y-2.5 overflow-y-auto border-t border-border p-4">
+        <div className="border-t border-border px-4 pt-3">
+          <input
+            value={feedFilter}
+            onChange={(e) => setFeedFilter(e.target.value)}
+            placeholder="Filter activity — agent name, file, error…"
+            className="w-full rounded-lg border border-border bg-background px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-accent/70 focus-visible:outline-none"
+          />
+        </div>
+        <div ref={feedRef} className="max-h-[70vh] space-y-2.5 overflow-y-auto p-4">
           {brainLogs.length === 0 ? (
             <p className="text-sm text-muted-foreground">Waiting for activity…</p>
           ) : (
             brainLogs
               .filter((log) => log.log_type !== "status")
+              .filter((log) => !feedFilter.trim() || log.content.toLowerCase().includes(feedFilter.trim().toLowerCase()))
               .map((log, i) => {
                 // Chat sender: "Fixer …" lines come from the Fixer; the rest is the Brain.
                 const sender = log.content.startsWith("Fixer") ? "Fixer" : "Brain";
